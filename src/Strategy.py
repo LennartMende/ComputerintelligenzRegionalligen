@@ -26,3 +26,4 @@ class Strategy:
         # calculate the fitness of the initial population
         fitness_values = FitnessCalculator.population_fitness(population_initializer.initial_population)
         print("Fitness Values: \n", fitness_values, "\n")
+        print("Average fitness Values: \n", [value/80 for value in fitness_values], "\n")
