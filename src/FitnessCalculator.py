@@ -1,10 +1,10 @@
-from ClubData import ClubData
+from src.ClubData import ClubData
 
 class FitnessCalculator:
     @staticmethod
     def clubs_to_coords(id_list: list[int]) -> list[tuple[float, float]]:
         """Converts a list of club IDs to a list of their corresponding coordinates."""
-        return [ClubData.clubs[id] for id in id_list]
+        return [ClubData.club_coords[id] for id in id_list]
 
     @staticmethod
     def _dist(a: tuple[float, float], b: tuple[float, float]) -> float:
