@@ -37,3 +37,11 @@ class FitnessCalculator:
         for i in range (80):
             total_fitness += FitnessCalculator._fitness_for_one_club(list_of_clubs, i)
         return total_fitness
+    
+    @staticmethod
+    def population_fitness(population: list[list[int]]) -> list[float]:
+        """Calculates the fitness for each individual in the population."""
+        fitness_values = []
+        for individual in population:
+            fitness_values.append(FitnessCalculator.individual_fitness(individual))
+        return fitness_values
