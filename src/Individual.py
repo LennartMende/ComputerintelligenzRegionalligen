@@ -1,6 +1,8 @@
 from __future__ import annotations
 import random
 from random import randint
+from statistics import mean
+
 
 from src.ClubData import ClubData
 from src.FitnessCalculator import FitnessCalculator
@@ -96,3 +98,26 @@ class Individual:
             print(f"Swap {swaps_done}: i={i} (Liga {i//20}) <-> j={j} (Liga {j//20})")
 
         print("--- Mutation Ende ---\n")
+
+
+    def sort_by_latitude(self) -> None:
+        """Sorts the 4 groups by their average latitude (north to south)."""
+
+        groups = [
+            self.permutation[i * 20:(i + 1) * 20]
+            for i in range(4)
+        ]
+
+        groups.sort(
+            key=lambda group: mean(
+                coord[0]
+                for coord in self.clubs_to_coords(group)
+            ),
+            reverse=True
+        )
+
+        self.permutation = [
+            club
+            for group in groups
+            for club in group
+        ]
