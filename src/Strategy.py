@@ -16,6 +16,8 @@ class Strategy:
 
         population = Population(pop_size=pop_size)
 
+        populations = [population]
+
         print("\n--- INITIAL POPULATION ---")
         for ind in population.individuals:
             print(ind.permutation, ind.fitness)
@@ -58,6 +60,14 @@ class Strategy:
             # -------------------------------------------------
             selected = population.select()
 
+            # -------------------------------------------------
+            # SAVE POPULATION
+            # -------------------------------------------------
+            populations.append(population)
+
+            # -------------------------------------------------
+            # CREATE NEW POPULATION
+            # -------------------------------------------------
             population = Population(
                 pop_size=pop_size,
                 individuals=selected,
