@@ -12,7 +12,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 10
+        pop_size = 10 # 20
 
         population = Population(pop_size=pop_size)
 
@@ -25,7 +25,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 10
+        generations = 10 # 30
 
         for gen in range(generations):
 
@@ -58,6 +58,11 @@ class Strategy:
             population.mutate()
 
             # -------------------------------------------------
+            # ELITISM
+            # -------------------------------------------------
+            # population.elitism(population)
+
+            # -------------------------------------------------
             # SELECTION
             # -------------------------------------------------
             selected = population.select()
@@ -76,7 +81,7 @@ class Strategy:
                 generation=population.generation
             )
 
-            populations.append(population)
+            populations.append(population) # warum 2-mal? Einmal nach Selektion, einmal nach Erzeugung der neuen Population?
 
         # -------------------------------------------------
         # FINAL OUTPUT
