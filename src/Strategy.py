@@ -1,5 +1,4 @@
-from src.PopulationInitializer import PopulationInitializer
-from src.FitnessCalculator import FitnessCalculator
+from src.Population import Population
 
 
 
@@ -7,23 +6,62 @@ from src.FitnessCalculator import FitnessCalculator
 
 class Strategy:
 
+    @staticmethod
     def run():
 
-        # create an instance of the PopulationInitializer class
-        population_initializer = PopulationInitializer()
+        # -------------------------------------------------
+        # INITIAL POPULATION
+        # -------------------------------------------------
+        pop_size = 10
 
-        # create an initial population of random individuals - default size is 100
-        population_size = 10
-        population_initializer.create_population(population_size)
+        population = Population(pop_size=pop_size)
 
-        print("Initial Population: \n", population_initializer.initial_population, "\n")
+        print("\n--- INITIAL POPULATION ---")
+        for ind in population.individuals:
+            print(ind.permutation, ind.fitness)
 
+        # -------------------------------------------------
+        # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
+        # -------------------------------------------------
+        generations = 3
 
+        for gen in range(generations):
 
-        # create an instance of the FitnessCalculator class
-        fitness_calculator = FitnessCalculator()
+            print(f"\n==============================")
+            print(f"GENERATION {population.generation}")
+            print(f"Best fitness: {population.best_individual.fitness}")
+            print(f"Avg fitness: {population.avg_fitness}")
+            print(f"Diversity: {population.diversity}")
 
-        # calculate the fitness of the initial population
-        fitness_values = FitnessCalculator.population_fitness(population_initializer.initial_population)
-        print("Fitness Values: \n", fitness_values, "\n")
-        print("Average distance per away game: \n", [value/80/19 for value in fitness_values], "\n")
+            # -------------------------------------------------
+            # RECOMBINATION
+            # -------------------------------------------------
+            offspring = population.recombine(method="ox")
+
+            # WICHTIG: neue Population erzeugen!
+            population = Population(
+                pop_size=pop_size,
+                individuals=[
+                    type(population.individuals[0]).from_permutation(child)
+                    for child in offspring
+                ],
+                generation=population.generation + 1
+            )
+
+            # -------------------------------------------------
+            # SELECTION
+            # -------------------------------------------------
+            selected = population.select()
+
+            population = Population(
+                pop_size=pop_size,
+                individuals=selected,
+                generation=population.generation
+            )
+
+        # -------------------------------------------------
+        # FINAL OUTPUT
+        # -------------------------------------------------
+        print("\n--- FINAL POPULATION ---")
+        for ind in population.individuals:
+            print(ind.permutation, ind.fitness)
