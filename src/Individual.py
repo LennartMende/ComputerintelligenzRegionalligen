@@ -3,12 +3,17 @@ import random
 from random import randint
 
 from src.ClubData import ClubData
-from src. FitnessCalculator import FitnessCalculator
+from src.FitnessCalculator import FitnessCalculator
 
 class Individual:
-    def __init__(self):
+    def __init__(self, permutation: list[int] | None = None):
         self.club_ids = list(ClubData.club_coords.keys())   # club_ids is a list of integers from 1 to 80 that were used as keys in the club_coords dictionary in ClubData.py
-        self.permutation = self._create_individual()
+
+        if permutation is None:
+            self.permutation = self._create_individual()
+        else:
+            self.permutation = permutation
+        
         self.permutation_size = 80
 
     def _create_individual(self) -> list[int]:
@@ -20,6 +25,11 @@ class Individual:
     def __str__(self):
         return f"permutation: {self.permutation}"
 
+    @classmethod
+    def from_permutation(cls, permutation: list[int]):
+        """Creates an individual from a given permutation of club IDs. This is useful for creating new individuals during recombination."""
+        return cls(permutation=permutation)
+
     @staticmethod
     def clubs_to_coords(id_list: list[int]) -> list[tuple[float, float]]:
         """Converts a list of club IDs to a list of their corresponding coordinates."""
@@ -28,7 +38,7 @@ class Individual:
     @property
     def fitness(self) -> float:
         '''Calculate the fitness of an individual'''
-        fitness = FitnessCalculator.individual_fitness(self.permutation)
+        fitness = FitnessCalculator.individual_fitness(self)
         return fitness
     
     def mutation(self, mutation_swaps: int) -> None: # TODO: swap with a team from another group instead of random swap

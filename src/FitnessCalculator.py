@@ -3,8 +3,10 @@ from haversine import haversine
 
 class FitnessCalculator:
     @staticmethod
-    def clubs_to_coords(id_list: list[int]) -> list[tuple[float, float]]:
-        """Converts a list of club IDs to a list of their corresponding coordinates."""
+    def clubs_to_coords(id_list):
+        if hasattr(id_list, "permutation"):
+            id_list = id_list.permutation
+
         return [ClubData.club_coords[id] for id in id_list]
 
     @staticmethod
@@ -23,20 +25,15 @@ class FitnessCalculator:
         return fitness
 
     @staticmethod
-    def individual_fitness(list_of_clubs) -> float:
-        """Calculates the total fitness for an individual by summing the fitness for each club."""
-        if all(isinstance(club, int) for club in list_of_clubs): # club : list[int]
-            list_of_clubs = FitnessCalculator.clubs_to_coords(list_of_clubs)
-        elif all(isinstance(club, tuple) for club in list_of_clubs) \
-            and all(isinstance(coord, float) for coord in list_of_clubs[0]): # club : list[tuple[float, float]]
-            pass
-        else:
-            raise ValueError("List must be of type list[int] or list[tuple[float, float]]!")
-        if len(list_of_clubs) != 80:
-            raise TypeError("List must include 80 elements!")
+    def individual_fitness(individual) -> float:
+        list_of_clubs = individual.permutation
+
+        coords = FitnessCalculator.clubs_to_coords(list_of_clubs)
+
         total_fitness = 0
-        for i in range (80):
-            total_fitness += FitnessCalculator._fitness_for_one_club(list_of_clubs, i)
+        for i in range(len(coords)):
+            total_fitness += FitnessCalculator._fitness_for_one_club(coords, i)
+
         return total_fitness
     
     @staticmethod

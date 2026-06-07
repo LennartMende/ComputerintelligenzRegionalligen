@@ -22,6 +22,7 @@ class Population:
         pop_size:int,
         individuals: List[Individual] | None = None,
         generation: int = 1,
+        recombination_rate: float = 1.0,
         mutation_rate: float = 0.1,
         tournament_size: int = 3,
         mutation_swaps: int = 3,
@@ -33,14 +34,15 @@ class Population:
             pop_size: Size of the population
             individuals: Optional list of individuals (used for next generation)
             generation: Generation index
+            recombination_rate: Probability of recombination
             mutation_rate: Mutation probability
             tournament_size: Size of the tournament for selection
             mutation_swaps: Number of swaps in mutation
         """
 
-        self.generation = generation
         self.pop_size = pop_size
-
+        self.generation = generation
+        self.recombination_rate = recombination_rate
         self.mutation_rate = mutation_rate
         self.tournament_size = tournament_size
         self.mutation_swaps = mutation_swaps
@@ -154,22 +156,22 @@ class Population:
             # --------------------------------------------------------
             # STEP 2: APPLY CROSSOVER OR COPY
             # --------------------------------------------------------
-            if random.random() < self.crossover_rate:
+            if random.random() < self.recombination_rate:
 
                 if method == "ox":
-                    child1, child2 = self.ox(parent1, parent2)
+                    child1, child2 = self.ox(parent1.permutation, parent2.permutation)
 
                 elif method == "pmx":
-                    child1, child2 = self.pmx(parent1, parent2)
+                    child1, child2 = self.pmx(parent1.permutation, parent2.permutation)
 
                 else:
                     raise ValueError(f"Unknown recombination method: {method}")
 
             else:
                 # no crossover → clone parents
-                child1, child2 = parent1[:], parent2[:]
+                child1, child2 = parent1.permutation[:], parent2.permutation[:]
 
-            new_population.extend([child1, child2])
+            new_population.extend([Individual.from_permutation(child1), Individual.from_permutation(child2)])
 
         # optional: store result
         self.individuals_after_recombination = new_population
@@ -189,6 +191,11 @@ class Population:
         Order Crossover (OX) implementation for permutation-based problems.
         Produces TWO children per crossover.
         """
+
+        if hasattr(parent1, "permutation"):
+            parent1 = parent1.permutation
+        if hasattr(parent2, "permutation"):
+            parent2 = parent2.permutation
 
         size = len(parent1)
 
