@@ -1,12 +1,18 @@
 from __future__ import annotations
-from random import uniform, gauss
+import random
 
 from src.ClubData import ClubData
 from src. FitnessCalculator import FitnessCalculator
 
 class Individual:
     def __init__(self):
-        self.permutation = tuple()
+        self.permutation = self._create_individual()
+
+    def _create_individual(self) -> list[int]:
+        """Creates a random individual (a random permutation of the clubs)."""
+        individual = self.club_ids.copy()
+        random.shuffle(individual)
+        return individual
 
     def __str__(self):
         return f"permutation: {self.permutation}"
