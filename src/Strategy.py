@@ -29,54 +29,51 @@ class Strategy:
 
         for gen in range(generations):
 
-            print(f"\n==============================")
+            print("\n==============================")
             print(f"GENERATION {population.generation}")
             print(f"Best fitness: {population.best_individual.fitness}")
             print(f"Avg fitness: {population.avg_fitness}")
             print(f"Diversity: {population.diversity}")
 
             # -------------------------------------------------
-            # RECOMBINATION
+            # 1. SELECTION (Eltern auswählen)
             # -------------------------------------------------
-            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
-            offspring = population.recombine(method="ox")
-            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
+            parents = population.select()
 
-            # WICHTIG: neue Population erzeugen!
-            population = Population(
+            # TEMP Population nur für Recombination
+            parent_population = Population(
                 pop_size=pop_size,
-                individuals=[
-                    type(population.individuals[0]).from_permutation(child)
-                    for child in offspring
-                ],
-                generation=population.generation + 1
-            )
-
-            # -------------------------------------------------
-            # MUTATION
-            # -------------------------------------------------
-            population.mutate()
-
-            # -------------------------------------------------
-            # SELECTION
-            # -------------------------------------------------
-            selected = population.select()
-
-            # -------------------------------------------------
-            # SAVE POPULATION
-            # -------------------------------------------------
-            populations.append(population)
-
-            # -------------------------------------------------
-            # CREATE NEW POPULATION
-            # -------------------------------------------------
-            population = Population(
-                pop_size=pop_size,
-                individuals=selected,
+                individuals=parents,
                 generation=population.generation
             )
 
-            populations.append(population)
+            # -------------------------------------------------
+            # 2. RECOMBINATION
+            # -------------------------------------------------
+            parent_population.sort_by_latitude()
+            offspring = parent_population.recombine(method="ox")
+
+            # -------------------------------------------------
+            # 3. MUTATION
+            # -------------------------------------------------
+            offspring_population = Population(
+                pop_size=pop_size,
+                individuals=offspring,
+                generation=population.generation + 1
+            )
+
+            offspring_population.mutate()
+
+            # -------------------------------------------------
+            # 4. ELITISMUS + NEUE GENERATION
+            # -------------------------------------------------
+            population = population.create_next_generation(offspring_population)
+
+            # -------------------------------------------------
+            # SAVE
+            # -------------------------------------------------
+            import copy
+            populations.append(copy.deepcopy(population))
 
         # -------------------------------------------------
         # FINAL OUTPUT

@@ -92,25 +92,25 @@ class Population:
     
 
     
-    def recombine(self, method: str = "pmx") -> List[Individual]:
-        """
-        Applies recombination to the current population.
+    # def recombine(self, method: str = "pmx") -> List[Individual]:
+    #     """
+    #     Applies recombination to the current population.
 
-        Args:
-            method: "pmx" or "ox"
+    #     Args:
+    #         method: "pmx" or "ox"
 
-        Returns:
-            List of offspring individuals
-        """
+    #     Returns:
+    #         List of offspring individuals
+    #     """
 
-        if method == "pmx":
-            self.individuals_after_recombination = self._recombine_pmx()
-        elif method == "ox":
-            self.individuals_after_recombination = self._recombine_ox()
-        else:
-            raise ValueError(f"Unknown recombination method: {method}")
+    #     if method == "pmx":
+    #         self.individuals_after_recombination = self._recombine_pmx()
+    #     elif method == "ox":
+    #         self.individuals_after_recombination = self._recombine_ox()
+    #     else:
+    #         raise ValueError(f"Unknown recombination method: {method}")
 
-        return self.individuals_after_recombination
+    #     return self.individuals_after_recombination
 
 
 
@@ -348,6 +348,31 @@ class Population:
 
         for ind in self.individuals:
             ind.sort_by_latitude()
+
+
+    def create_next_generation(self, offspring_population, elite_size: int = 2):
+        """
+        Combines elitism + offspring to create next generation
+        """
+
+        # -------------------------------------------------
+        # ELITE AUS ALTER POPULATION
+        # -------------------------------------------------
+        elites = sorted(self.individuals, key=lambda ind: ind.fitness)[:elite_size]
+
+        # -------------------------------------------------
+        # REST AUS OFFSPRING
+        # -------------------------------------------------
+        remaining = self.pop_size - elite_size
+        offspring_sorted = sorted(offspring_population.individuals, key=lambda ind: ind.fitness)
+
+        new_individuals = elites + offspring_sorted[:remaining]
+
+        return Population(
+            pop_size=self.pop_size,
+            individuals=new_individuals,
+            generation=self.generation + 1
+        )
 
     # ------------------------------------------------------------
     # EVALUATION
