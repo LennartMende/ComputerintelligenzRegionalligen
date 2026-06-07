@@ -18,7 +18,7 @@ class PopulationInitializer:
         random.shuffle(individual)
         return individual
 
-    def create_population(self, population_size: int) -> list[list[int]]:
+    def create_population(self, population_size: int) -> None:
         """Creates a population of random individuals."""
 
         for i in range(population_size):

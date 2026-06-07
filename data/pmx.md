@@ -9,4 +9,4 @@ Innerhalb des markierten Bereichs erfolgt parent1 -> offspring1 bzw. parent2 -> 
 P1 | 3 4 5 6  
 ------------  
 P2 | 2 1 8 4  
-Somit kann Punkt 5 aus P1 die 1 aus P2 zugeordnet werden, die auch noch nicht in O1 vorkommt.
+Somit kann Punkt 5 aus P1 die 1 aus P2 zugeordnet werden, die auch noch nicht in O1 vorkommt.  
