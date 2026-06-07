@@ -31,7 +31,7 @@ class Individual:
         fitness = FitnessCalculator.individual_fitness(self.permutation)
         return fitness
     
-    def mutation(self, mutation_swaps: int) -> None:
+    def mutation(self, mutation_swaps: int) -> None: # TODO: swap with a team from another group instead of random swap
         if mutation_swaps > 40 or mutation_swaps < 0:
             raise ValueError("mutation_swaps must be between 0 and 40!")
         self.permutation = self.permutation.copy()
