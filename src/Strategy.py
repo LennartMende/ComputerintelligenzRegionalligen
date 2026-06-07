@@ -1,3 +1,4 @@
+from __future__ import annotations
 from src.Population import Population
 from src.GenerationVisualizer import GenerationVisualizer
 
@@ -72,6 +73,8 @@ class Strategy:
                 individuals=selected,
                 generation=population.generation
             )
+
+            populations.append(population)
 
         # -------------------------------------------------
         # FINAL OUTPUT

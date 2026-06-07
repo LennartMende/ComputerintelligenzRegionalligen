@@ -59,18 +59,40 @@ class Individual:
     #         self.permutation[index1], self.permutation[index2] = self.permutation[index2], self.permutation[index1]
 
     # ChatGPT version of mutation method, which ensures that the same index is not swapped twice in one mutation step
+    import random
+
     def mutation(self, mutation_swaps: int) -> None:
-        
+
         if hasattr(self.permutation, "permutation"):
             self.permutation = self.permutation.permutation
-    
-        available = list(range(self.permutation_size))
 
-        for _ in range(mutation_swaps):
-            i = random.choice(available)
-            available.remove(i)
+        size = len(self.permutation)
 
-            j = random.choice(available)
-            available.remove(j)
+        swaps_done = 0
+        attempts = 0
+        max_attempts = mutation_swaps * 20
 
-            self.permutation[i], self.permutation[j] = self.permutation[j], self.permutation[i]
+        print("\n--- Mutation Start ---")
+
+        while swaps_done < mutation_swaps and attempts < max_attempts:
+
+            i = random.randrange(size)
+            j = random.randrange(size)
+
+            # Liga-Constraint
+            if (i // 20) == (j // 20):
+                attempts += 1
+                continue
+
+            # Swap durchführen
+            self.permutation[i], self.permutation[j] = (
+                self.permutation[j],
+                self.permutation[i],
+            )
+
+            swaps_done += 1
+            attempts += 1
+
+            print(f"Swap {swaps_done}: i={i} (Liga {i//20}) <-> j={j} (Liga {j//20})")
+
+        print("--- Mutation Ende ---\n")

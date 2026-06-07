@@ -1,7 +1,7 @@
+from __future__ import annotations
 import random
 from typing import List, Tuple
 from statistics import stdev
-from __future__ import annotations
 
 from src.Individual import Individual
 
@@ -13,8 +13,6 @@ class Population:
     Attributes:
         generation (int): Current generation number
         individuals (List[Individual]): List of individuals in the population
-
-        mutation_rate (float): Probability of mutation
         crossover_rate (float): Probability of crossover
         mutation_swaps (int): Number of swaps applied during mutation
     """
@@ -24,7 +22,6 @@ class Population:
         individuals: List[Individual] | None = None,
         generation: int = 1,
         recombination_rate: float = 1.0,
-        mutation_rate: float = 0.1,
         tournament_size: int = 3,
         mutation_swaps: int = 3,
     ):
@@ -36,7 +33,6 @@ class Population:
             individuals: Optional list of individuals (used for next generation)
             generation: Generation index
             recombination_rate: Probability of recombination
-            mutation_rate: Mutation probability
             tournament_size: Size of the tournament for selection
             mutation_swaps: Number of swaps in mutation
         """
@@ -44,7 +40,6 @@ class Population:
         self.pop_size = pop_size
         self.generation = generation
         self.recombination_rate = recombination_rate
-        self.mutation_rate = mutation_rate
         self.tournament_size = tournament_size
         self.mutation_swaps = mutation_swaps
 
@@ -295,8 +290,7 @@ class Population:
 
     def mutate(self):
         for ind in self.individuals:
-            if random.random() < self.mutation_rate:
-                ind.mutation(self.mutation_swaps)
+            ind.mutation(self.mutation_swaps)
 
     
 
