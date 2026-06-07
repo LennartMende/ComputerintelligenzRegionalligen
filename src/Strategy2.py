@@ -12,7 +12,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 10
+        pop_size = 10 # 20
 
         population = Population(pop_size=pop_size)
 
@@ -25,55 +25,63 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 10
+        generations = 10 # 30
 
         for gen in range(generations):
 
-            print("\n==============================")
+            print(f"\n==============================")
             print(f"GENERATION {population.generation}")
             print(f"Best fitness: {population.best_individual.fitness}")
             print(f"Avg fitness: {population.avg_fitness}")
             print(f"Diversity: {population.diversity}")
 
             # -------------------------------------------------
-            # 1. SELECTION (Eltern auswählen)
+            # RECOMBINATION
             # -------------------------------------------------
-            parents = population.select()
+            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
+            offspring = population.recombine(method="ox")
+            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
 
-            # TEMP Population nur für Recombination
-            parent_population = Population(
+            # WICHTIG: neue Population erzeugen!
+            population = Population(
                 pop_size=pop_size,
-                individuals=parents,
-                generation=population.generation
-            )
-
-            # -------------------------------------------------
-            # 2. RECOMBINATION
-            # -------------------------------------------------
-            parent_population.sort_by_latitude()
-            offspring = parent_population.recombine(method="ox")
-
-            # -------------------------------------------------
-            # 3. MUTATION
-            # -------------------------------------------------
-            offspring_population = Population(
-                pop_size=pop_size,
-                individuals=offspring,
+                individuals=[
+                    type(population.individuals[0]).from_permutation(child)
+                    for child in offspring
+                ],
                 generation=population.generation + 1
             )
 
-            offspring_population.mutate()
+            # -------------------------------------------------
+            # MUTATION
+            # -------------------------------------------------
+            population.mutate()
 
             # -------------------------------------------------
-            # 4. ELITISMUS + NEUE GENERATION
+            # ELITISM
             # -------------------------------------------------
-            population = population.create_next_generation(offspring_population)
+            # population.elitism(population)
 
             # -------------------------------------------------
-            # SAVE
+            # SELECTION
             # -------------------------------------------------
-            import copy
-            populations.append(copy.deepcopy(population))
+            selected = population.select()
+
+            # -------------------------------------------------
+            # SAVE POPULATION
+            # -------------------------------------------------
+            populations.append(population)
+
+            # -------------------------------------------------
+            # CREATE NEW POPULATION
+            # -------------------------------------------------
+            population = Population(
+                pop_size=pop_size,
+                individuals=selected,
+                generation=population.generation
+            )
+
+            populations.append(population) # warum 2-mal? Einmal nach Selektion, einmal nach Erzeugung der neuen Population?
 
         # -------------------------------------------------
         # FINAL OUTPUT

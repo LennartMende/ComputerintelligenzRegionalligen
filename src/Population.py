@@ -348,6 +348,12 @@ class Population:
 
         for ind in self.individuals:
             ind.sort_by_latitude()
+    
+
+    def elitism(self, other: Population) -> None:
+        """Replaces the worst individual in the population with the given best individual."""
+        overwritten_index = other.individuals.index(other.worst_individual)
+        other.individuals[overwritten_index] = self.best_individual
 
 
     def create_next_generation(self, offspring_population, elite_size: int = 2):
