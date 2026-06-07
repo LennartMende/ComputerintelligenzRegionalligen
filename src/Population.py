@@ -292,6 +292,13 @@ class Population:
 
     
 
+    def mutate(self):
+        for ind in self.individuals:
+            if random.random() < self.mutation_rate:
+                ind.mutation(self.mutation_swaps)
+
+    
+
     # ------------------------------------------------------------
     # SELECT ONE INDIVIDUAL (TOURNAMENT)
     # ------------------------------------------------------------

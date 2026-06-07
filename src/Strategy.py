@@ -23,7 +23,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 3
+        generations = 10
 
         for gen in range(generations):
 
@@ -47,6 +47,11 @@ class Strategy:
                 ],
                 generation=population.generation + 1
             )
+
+            # -------------------------------------------------
+            # MUTATION
+            # -------------------------------------------------
+            population.mutate()
 
             # -------------------------------------------------
             # SELECTION
