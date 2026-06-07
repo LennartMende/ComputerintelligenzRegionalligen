@@ -74,7 +74,7 @@ class Individual:
         attempts = 0
         max_attempts = mutation_swaps * 20
 
-        print("\n--- Mutation Start ---")
+        #print("\n--- Mutation Start ---")
 
         while swaps_done < mutation_swaps and attempts < max_attempts:
 
@@ -95,9 +95,9 @@ class Individual:
             swaps_done += 1
             attempts += 1
 
-            print(f"Swap {swaps_done}: i={i} (Liga {i//20}) <-> j={j} (Liga {j//20})")
+            #print(f"Swap {swaps_done}: i={i} (Liga {i//20}) <-> j={j} (Liga {j//20})")
 
-        print("--- Mutation Ende ---\n")
+        #print("--- Mutation Ende ---\n")
 
 
     def sort_by_latitude(self) -> None:

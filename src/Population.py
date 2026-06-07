@@ -22,7 +22,7 @@ class Population:
         individuals: List[Individual] | None = None,
         generation: int = 1,
         recombination_rate: float = 1.0,
-        tournament_size: int = 3,
+        tournament_size: int = 5,
         mutation_swaps: int = 3,
     ):
         """
