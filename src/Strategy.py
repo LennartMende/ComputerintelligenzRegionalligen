@@ -1,6 +1,5 @@
 from src.Population import Population
-
-
+from src.GenerationVisualizer import GenerationVisualizer
 
 
 
@@ -80,3 +79,10 @@ class Strategy:
         print("\n--- FINAL POPULATION ---")
         for ind in population.individuals:
             print(ind.permutation, ind.fitness)
+        
+        # -------------------------------------------------
+        # EVALUATION
+        # -------------------------------------------------
+        Population.evaluation(populations[0], population)
+        GenerationVisualizer.show_avg_fit(populations=populations)
+        GenerationVisualizer.show_best_fit(populations=populations)

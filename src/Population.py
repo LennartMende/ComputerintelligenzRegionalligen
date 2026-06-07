@@ -1,6 +1,7 @@
 import random
 from typing import List, Tuple
 from statistics import stdev
+from __future__ import annotations
 
 from src.Individual import Individual
 
@@ -348,3 +349,17 @@ class Population:
 
         return new_population
     
+    # ------------------------------------------------------------
+    # EVALUATION
+    # ------------------------------------------------------------
+    @staticmethod
+    def evaluation(pop1: Population, pop2: Population):
+        print("\n", "-" * 80)
+        print("                     pop1    pop2")
+        print()
+        print("fitness sum:     ", f"{sum(pop1.fitnesses):7.1f} ", f" {sum(pop2.fitnesses):7.1f}")
+        print("avg fitness:     ", f"{sum(pop1.fitnesses)/pop1.pop_size:7.1f} ", f" {sum(pop2.fitnesses)/pop2.pop_size:7.1f}")
+        print("fitness\n(best_individual): ", f"{pop1.best_individual.fitness:7.1f} ", f" {pop2.best_individual.fitness:7.1f}")
+        print("-"*50, "\navg_fit(p2)/avg_fit(p1) = ", f"{(sum(pop2.fitnesses)/pop1.pop_size) / (sum(pop1.fitnesses)/pop2.pop_size):3.1f}")
+        print("best_indiv_fit(p2)/best_indiv_fit(p1) = ", f"{(pop2.best_individual.fitness) / (pop1.best_individual.fitness):3.1f}")
+        print("-" * 80, "\n")

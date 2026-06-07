@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-class EAVisualizer:
+from src.Population import Population
+
+class GenerationVisualizer:
     def __init__(self, population: Population):
         self.population = population
     
