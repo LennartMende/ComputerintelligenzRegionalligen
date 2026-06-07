@@ -249,6 +249,11 @@ class Population:
     ) -> Tuple[List[int], List[int]]:
         """Performs Partially Mapped Crossover (PMX) on two parents to produce two offspring."""
 
+        if hasattr(parent1, "permutation"):
+            parent1 = parent1.permutation
+        if hasattr(parent2, "permutation"):
+            parent2 = parent2.permutation
+
         # check if parents are of the same length
         size = len(parent1)
         if size != len(parent2):
