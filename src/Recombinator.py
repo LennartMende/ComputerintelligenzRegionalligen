@@ -4,7 +4,7 @@ class RecombinatorPmx:
 
     @staticmethod
     def pmx(parent1: list[int], parent2: list[int], cut1: int = -1, cut2: int = -1) -> tuple[list[int], list[int]]:
-        '''Performs Partially Mapped Crossover (PMX) on two parents to produce two offspring.'''
+        """Performs Partially Mapped Crossover (PMX) on two parents to produce two offspring."""
         # check if parents are of the same length
         size = len(parent1)
         if size != len(parent2):
