@@ -38,7 +38,9 @@ class Strategy:
             # -------------------------------------------------
             # RECOMBINATION
             # -------------------------------------------------
+            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
             offspring = population.recombine(method="ox")
+            population.sort_by_latitude() # sort the groups by their average latitude (north to south)
 
             # WICHTIG: neue Population erzeugen!
             population = Population(

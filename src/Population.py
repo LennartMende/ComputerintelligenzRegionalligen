@@ -343,6 +343,12 @@ class Population:
 
         return new_population
     
+    def sort_by_latitude(self) -> None:
+        """Sorts the 4 groups by their average latitude (north to south)."""
+
+        for ind in self.individuals:
+            ind.sort_by_latitude()
+
     # ------------------------------------------------------------
     # EVALUATION
     # ------------------------------------------------------------
