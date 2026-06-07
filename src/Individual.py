@@ -1,6 +1,7 @@
 from __future__ import annotations
 import random
 from random import randint
+from statistics import mean
 
 from src.ClubData import ClubData
 from src.FitnessCalculator import FitnessCalculator
@@ -54,3 +55,22 @@ class Individual:
                 index2 = randint(0, self.permutation_size - 1)
             indexes.remove(index2)
             self.permutation[index1], self.permutation[index2] = self.permutation[index2], self.permutation[index1]
+    
+    def avg_group_latitudes(self) -> list[float]:
+        """Calculates the average latitude for each of the 4 groups of clubs in the individual's permutation."""
+        avg_group_latitudes = []
+        for i in range(0, 4):
+            avg_group_latitudes.append(mean([coord[0] for coord in self.clubs_to_coords(self.permutation[i * 20:(i + 1) * 20])]))
+    
+        return avg_group_latitudes
+    
+    def sort_by_latitude(self, debug: bool = True) -> None:
+        """Sorts the individual's permutation by the average latitude of the groups of clubs."""
+        if debug:
+            print(f"Sorting individual by latitude.")
+            print("original: ", self.avg_group_latitudes())
+        groups = [self.permutation[i * 20:(i + 1) * 20] for i in range(4)]
+        groups.sort(key=lambda group: mean(coord[0] for coord in self.clubs_to_coords(group)), reverse=True)
+        self.permutation = [club for group in groups for club in group]
+        if debug:
+            print("sorted: ", self.avg_group_latitudes())
