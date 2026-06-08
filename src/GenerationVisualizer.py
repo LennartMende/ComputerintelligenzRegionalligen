@@ -29,26 +29,41 @@ class GenerationVisualizer:
         plt.show()
 
     def plot_map(population: Population):
-        
+    
         COLORS = ["blue", "green", "orange", "red"]
 
         individual = population.best_individual
-
         perm = individual.permutation
 
-        # 4 Ligen schneiden
         leagues = [perm[i:i+20] for i in range(0, len(perm), 20)]
 
-        for league, color in zip(leagues, COLORS):
+        plt.figure(figsize=(10, 8))
+
+        for league_idx, (league, color) in enumerate(zip(leagues, COLORS)):
+
             coords = [ClubData.club_coords[i] for i in league]
 
             lats = [c[0] for c in coords]
             lons = [c[1] for c in coords]
 
-            plt.scatter(lons, lats, c=color)
+            plt.scatter(lons, lats, c=color, label=f"Liga {league_idx+1}")
+
+            # 🔥 IDs hinzufügen
+            for club_id, (lat, lon) in zip(league, coords):
+
+                plt.annotate(
+                    str(club_id),
+                    (lon, lat),
+                    xytext=(3, 3),                 # kleiner Offset
+                    textcoords="offset points",
+                    fontsize=7,
+                    alpha=0.8
+                )
 
         plt.title("Bestes Individuum (Ligenverteilung)")
         plt.xlabel("Longitude")
         plt.ylabel("Latitude")
-        plt.legend(["Liga 1", "Liga 2", "Liga 3", "Liga 4"])
+        plt.legend()
+        plt.grid(True)
+
         plt.show()
