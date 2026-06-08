@@ -6,6 +6,8 @@ from statistics import stdev
 from src.Individual import Individual
 
 
+
+
 class Population:
     """
     Represents a population in an evolutionary algorithm.

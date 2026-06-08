@@ -3,9 +3,12 @@ import random
 from random import randint
 from statistics import mean
 
-
 from src.ClubData import ClubData
 from src.FitnessCalculator import FitnessCalculator
+
+
+
+
 
 class Individual:
     def __init__(self, permutation: list[int] | None = None):

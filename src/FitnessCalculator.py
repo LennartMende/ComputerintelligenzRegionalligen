@@ -1,6 +1,10 @@
 from src.ClubData import ClubData
 from haversine import haversine
 
+
+
+
+
 class FitnessCalculator:
     @staticmethod
     def clubs_to_coords(id_list):

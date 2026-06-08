@@ -4,6 +4,10 @@ import numpy as np
 from src.ClubData import ClubData
 from src.Population import Population
 
+
+
+
+
 class GenerationVisualizer:
     def __init__(self, population: Population):
         self.population = population

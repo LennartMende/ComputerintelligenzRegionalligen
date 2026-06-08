@@ -2,12 +2,25 @@ from __future__ import annotations
 from src.Population import Population
 from src.GenerationVisualizer import GenerationVisualizer
 
+import random
+
+
+
 
 
 class Strategy:
 
     @staticmethod
     def run():
+
+        random_seed = 42
+
+        if random_seed is not None:
+            random.seed(random_seed)
+            print(f"Random seed set to: {random_seed}\n")
+        
+        else:
+            print(f"No random seed provided. Results may vary between runs.\n")
 
         # -------------------------------------------------
         # INITIAL POPULATION
@@ -25,7 +38,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 100
+        generations = 3
 
         for gen in range(generations):
 
