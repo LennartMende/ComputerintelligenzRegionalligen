@@ -302,7 +302,7 @@ class Population:
                 ind.mutation(self.mutation_swaps)
 
             else:
-                ind.mutation_from_location(max_swaps=self.mutation_swaps)
+                ind.mutation_from_location_hardcore(max_swaps=self.mutation_swaps)
 
     
 

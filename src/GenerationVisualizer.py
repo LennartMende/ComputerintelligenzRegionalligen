@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 from src.ClubData import ClubData
 from src.Population import Population
@@ -111,7 +112,12 @@ class GenerationVisualizer:
         limits = GenerationVisualizer.project_extreme_points()
 
         # Bild laden und anzeigen im richtigen Koordinatensystem
-        img = plt.imread("images/germany2.png")
+        base_path = os.path.dirname(__file__)          # .../src
+        project_root = os.path.dirname(base_path)      # .../ (eine Ebene höher)
+
+        img_path = os.path.join(project_root, "images", "germany2.png")
+
+        img = plt.imread(img_path)
         plt.imshow(img, extent=[limits["west"], limits["east"], limits["south"], limits["north"]])
 
 
@@ -127,7 +133,7 @@ class GenerationVisualizer:
 
             plt.scatter(lats, lons, c=color, label=f"Liga {league_idx+1}")
 
-            # 🔥 IDs hinzufügen
+            # IDs hinzufügen
             for club_id, (lat, lon) in zip(league, coords):
 
                 plt.annotate(
