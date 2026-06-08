@@ -25,7 +25,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 50
+        generations = 100
 
         for gen in range(generations):
 

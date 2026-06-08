@@ -97,6 +97,85 @@ class Individual:
 
         #print("--- Mutation Ende ---\n")
 
+    
+
+    def mutation_from_location(self, max_swaps: int = 1) -> None:
+        import random
+        from src.ClubData import ClubData
+
+        def distance(a, b):
+            return ((a[0] - b[0])**2 + (a[1] - b[1])**2) ** 0.5
+
+        size = len(self.permutation)
+        leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+
+        centroids = []
+        for league in leagues:
+            coords = [ClubData.club_coords[i] for i in league]
+            lat = sum(c[0] for c in coords) / len(coords)
+            lon = sum(c[1] for c in coords) / len(coords)
+            centroids.append((lat, lon))
+
+        swaps_done = 0
+        attempts = 0
+        max_attempts = max_swaps * 5   # 🔥 wichtig
+
+        while swaps_done < max_swaps and attempts < max_attempts:
+
+            attempts += 1
+
+            # --- schlechtestes Team ---
+            worst_team = None
+            worst_league = None
+            worst_dist = -1
+
+            for l_idx, league in enumerate(leagues):
+                for team in league:
+                    d = distance(ClubData.club_coords[team], centroids[l_idx])
+                    if d > worst_dist:
+                        worst_dist = d
+                        worst_team = team
+                        worst_league = l_idx
+
+            # --- bestes Ziel ---
+            best_target = None
+            best_gain = 0
+
+            for target_l in range(4):
+                if target_l == worst_league:
+                    continue
+
+                d_new = distance(
+                    ClubData.club_coords[worst_team],
+                    centroids[target_l]
+                )
+
+                gain = worst_dist - d_new
+
+                # 🔥 nur akzeptieren wenn wirklich sinnvoll
+                if gain > best_gain:
+                    best_gain = gain
+                    best_target = target_l
+
+            # ❌ kein sinnvoller Move → ABBRUCH
+            if best_target is None or best_gain < 1e-6:
+                return
+
+            # --- Swap ---
+            idx1 = self.permutation.index(worst_team)
+            target_range = range(best_target * 20, (best_target + 1) * 20)
+            idx2 = random.choice(list(target_range))
+
+            self.permutation[idx1], self.permutation[idx2] = (
+                self.permutation[idx2],
+                self.permutation[idx1],
+            )
+
+            leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+
+            swaps_done += 1
+
+
 
     def sort_by_latitude(self) -> None:
         """Sorts the 4 groups by their average latitude (north to south)."""

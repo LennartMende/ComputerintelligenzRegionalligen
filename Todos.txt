@@ -2,7 +2,8 @@
 
 - random seed setzen!
 
-- Visualisierung
+- Zahlen an die Punkte in der Visualisierung schreiben
+- Visualisierung mit Karte von Deutschland im Hintergrund
 - Constraints am Anfang
 - Mutation nur mit benachbarten Ligen
 - Mutation besonders bei schlechten Teams (Teams mit einzelner schlechter Fitness) besonders wahrscheinlich
