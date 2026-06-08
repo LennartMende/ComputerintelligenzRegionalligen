@@ -1,8 +1,11 @@
 - VALIDIERUNG!!!
 
 
-- Constraints am Anfang
-- Mutation nur mit benachbarten Ligen
-- Selektionsdruck variieren: Eploration <-> Exploitation
+- Constraints am Anfang (sinnvolle Initialpopulation)
+- Mutation nur mit benachbarten Ligen (sinnvolle Initialpopulation)
+- Mutation besonders bei schlechten Teams (Teams mit einzelner schlechter Fitness = großem Abstand zum Ligen-Schwerpunkt) besonders wahrscheinlich
+- Selektionsdruck variieren: Exploration <-> Exploitation, generell auf Hyperparameter achten, z. B. am Anfang mehr Mutations-Swaps als am Ende (da nur noch 1)
 - eventuell bei Festhängen (Elitismus) nochmal alte, andere Individuen reinholen für Diversität
 - eventuell Nord-Süd-Sortierung, sodass eventuell tausch von Platz 20 + 21 auch mit Mutation o. Ä. möglich bzw. Ordnung der vereine in der Liga bedeutung haben
+
+- multi-objective optimization -> Fahrtweg sollte in allen Ligen möglichst gleich sein
