@@ -25,7 +25,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 30
+        pop_size = 10
 
         population = Population(pop_size=pop_size)
 
@@ -38,7 +38,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 200
+        generations = 2
 
         for gen in range(generations):
 
