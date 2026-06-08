@@ -12,7 +12,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 20
+        pop_size = 30
 
         population = Population(pop_size=pop_size)
 
@@ -25,7 +25,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 30
+        generations = 200
 
         for gen in range(generations):
 
@@ -88,3 +88,7 @@ class Strategy:
         Population.evaluation(populations[0], population)
         GenerationVisualizer.show_avg_fit(populations=populations)
         GenerationVisualizer.show_best_fit(populations=populations)
+        # -------------------------------------------------
+        # VISUALIZATION
+        # -------------------------------------------------
+        GenerationVisualizer.plot_map(population)
