@@ -1,12 +1,8 @@
 - VALIDIERUNG!!!
 
-- random seed setzen!
 
-- Zahlen an die Punkte in der Visualisierung schreiben
-- Visualisierung mit Karte von Deutschland im Hintergrund
 - Constraints am Anfang
 - Mutation nur mit benachbarten Ligen
-- Mutation besonders bei schlechten Teams (Teams mit einzelner schlechter Fitness) besonders wahrscheinlich
 - Selektionsdruck variieren: Eploration <-> Exploitation
 - eventuell bei Festhängen (Elitismus) nochmal alte, andere Individuen reinholen für Diversität
 - eventuell Nord-Süd-Sortierung, sodass eventuell tausch von Platz 20 + 21 auch mit Mutation o. Ä. möglich bzw. Ordnung der vereine in der Liga bedeutung haben

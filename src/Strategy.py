@@ -28,6 +28,7 @@ class Strategy:
         pop_size = 30
 
         population = Population(pop_size=pop_size)
+        stagnation_counter = 0
 
         populations = [population]
 
@@ -84,7 +85,14 @@ class Strategy:
             # 4. ELITISMUS + NEUE GENERATION
             # -------------------------------------------------
             population = population.create_next_generation(offspring_population)
+            if population.best_individual.fitness >= populations[-1].best_individual.fitness:
+                stagnation_counter += 1
+            else:
+                stagnation_counter = 0
 
+            if stagnation_counter >= 10:
+                print("\nStagnated for 10 generations. Stopping early.")
+                break
             # -------------------------------------------------
             # SAVE
             # -------------------------------------------------
