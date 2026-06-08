@@ -120,11 +120,9 @@ class GenerationVisualizer:
         img = plt.imread(img_path)
         plt.imshow(img, extent=[limits["west"], limits["east"], limits["south"], limits["north"]])
 
-
+        projected = GenerationVisualizer.project_club_coords()
 
         for league_idx, (league, color) in enumerate(zip(leagues, COLORS)):
-
-            projected = GenerationVisualizer.project_club_coords()
 
             coords = [projected[i] for i in league]
 
@@ -138,7 +136,7 @@ class GenerationVisualizer:
 
                 plt.annotate(
                     str(club_id),
-                    (lon, lat),
+                    (lat, lon),
                     xytext=(3, 3),                 # kleiner Offset
                     textcoords="offset points",
                     fontsize=7,
@@ -149,7 +147,7 @@ class GenerationVisualizer:
         plt.title("Bestes Individuum (Ligenverteilung)")
         # plt.xlabel("Longitude")
         # plt.ylabel("Latitude")
-        plt.legend()
+        plt.legend(loc="upper left")
         # plt.grid(True)
 
         # Achsenbegrenzungen auf Deutschland setzen
@@ -157,6 +155,6 @@ class GenerationVisualizer:
         plt.ylim(limits["south"], limits["north"])
 
         # Seitenverhältnis beibehalten
-        plt.axis("equal")
-
+        #plt.axis("equal")
+        plt.axis("off")
         plt.show()
