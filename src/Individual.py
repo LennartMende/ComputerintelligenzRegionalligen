@@ -102,7 +102,68 @@ class Individual:
 
     
 
-    def mutation_from_location(self, max_swaps: int = 1) -> None:
+    def mutation_from_location(self, max_swaps: int = 1, base_prob: float = 0.1) -> None:
+
+        def distance(a, b):
+            return ((a[0] - b[0])**2 + (a[1] - b[1])**2) ** 0.5
+
+        size = len(self.permutation)
+        leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+
+        # --- Zentren ---
+        centroids = []
+        for league in leagues:
+            coords = [ClubData.club_coords[i] for i in league]
+            lat = sum(c[0] for c in coords) / len(coords)
+            lon = sum(c[1] for c in coords) / len(coords)
+            centroids.append((lat, lon))
+
+        # --- Distanzen ---
+        club_distances = {}
+        max_dist = 0
+
+        for l_idx, league in enumerate(leagues):
+            for club in league:
+                d = distance(ClubData.club_coords[club], centroids[l_idx])
+                club_distances[club] = (d, l_idx)
+                max_dist = max(max_dist, d)
+
+        if max_dist == 0:
+            return
+
+        # --- probabilistische Auswahl vorbereiten ---
+        candidates = []
+
+        for idx, club in enumerate(self.permutation):
+            dist, league_idx = club_distances[club]
+            norm_d = dist / max_dist
+            prob = base_prob + (1 - base_prob) * norm_d
+
+            if random.random() < prob:
+                candidates.append((idx, club, league_idx))
+
+        # maximal max_swaps verwenden
+        random.shuffle(candidates)
+        candidates = candidates[:max_swaps]
+
+        # --- Swaps durchführen ---
+        for idx, club, league_idx in candidates:
+
+            target_league = random.choice(
+                [l for l in range(4) if l != league_idx]
+            )
+
+            target_range = range(target_league * 20, (target_league + 1) * 20)
+            swap_idx = random.choice(list(target_range))
+
+            self.permutation[idx], self.permutation[swap_idx] = (
+                self.permutation[swap_idx],
+                self.permutation[idx],
+            )
+
+    
+
+    def mutation_from_location_hardcore(self, max_swaps: int = 1) -> None:
         import random
         from src.ClubData import ClubData
 
@@ -121,7 +182,7 @@ class Individual:
 
         swaps_done = 0
         attempts = 0
-        max_attempts = max_swaps * 5   # 🔥 wichtig
+        max_attempts = max_swaps * 5   # wichtig
 
         while swaps_done < max_swaps and attempts < max_attempts:
 
@@ -155,12 +216,12 @@ class Individual:
 
                 gain = worst_dist - d_new
 
-                # 🔥 nur akzeptieren wenn wirklich sinnvoll
+                # nur akzeptieren wenn wirklich sinnvoll
                 if gain > best_gain:
                     best_gain = gain
                     best_target = target_l
 
-            # ❌ kein sinnvoller Move → ABBRUCH
+            # kein sinnvoller Move → ABBRUCH
             if best_target is None or best_gain < 1e-6:
                 return
 
