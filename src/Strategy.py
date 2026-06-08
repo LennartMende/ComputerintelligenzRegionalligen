@@ -25,7 +25,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 200
+        generations = 50
 
         for gen in range(generations):
 
@@ -33,6 +33,7 @@ class Strategy:
             print(f"GENERATION {population.generation}")
             print(f"Best fitness: {population.best_individual.fitness}")
             print(f"Avg fitness: {population.avg_fitness}")
+            print(f"average distance for one trip: {population.avg_distance}")
             print(f"Diversity: {population.diversity}")
 
             # -------------------------------------------------
@@ -61,6 +62,8 @@ class Strategy:
                 individuals=offspring,
                 generation=population.generation + 1
             )
+
+            offspring_population.sort_by_latitude()
 
             offspring_population.mutate()
 

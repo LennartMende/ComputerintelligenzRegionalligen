@@ -81,6 +81,11 @@ class Population:
     def avg_fitness(self) -> float:
         """Returns the average fitness."""
         return self.total_fitness / self.pop_size
+    
+    @property
+    def avg_distance(self) -> float:
+        """Returns the average distance for one trip."""
+        return self.best_individual.fitness / (80 * 19)
 
     @property
     def diversity(self) -> float:

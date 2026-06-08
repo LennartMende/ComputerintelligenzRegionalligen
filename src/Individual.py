@@ -60,9 +60,7 @@ class Individual:
     #         indexes.remove(index2)
     #         self.permutation[index1], self.permutation[index2] = self.permutation[index2], self.permutation[index1]
 
-    # ChatGPT version of mutation method, which ensures that the same index is not swapped twice in one mutation step
-    import random
-
+    # ChatGPT version of mutation method, which ensures that the same index is not swapped twice in one mutation step and that only teams from different groups are swapped
     def mutation(self, mutation_swaps: int) -> None:
 
         if hasattr(self.permutation, "permutation"):

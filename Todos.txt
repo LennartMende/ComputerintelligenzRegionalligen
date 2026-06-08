@@ -1,5 +1,7 @@
 - VALIDIERUNG!!!
 
+- random seed setzen!
+
 - Visualisierung
 - Constraints am Anfang
 - Mutation nur mit benachbarten Ligen
