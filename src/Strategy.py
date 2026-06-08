@@ -4,7 +4,7 @@ from src.GenerationVisualizer import GenerationVisualizer
 
 import random
 
-
+from copy import deepcopy
 
 
 
@@ -35,6 +35,13 @@ class Strategy:
         print("\n--- INITIAL POPULATION ---")
         for ind in population.individuals:
             print(ind.permutation, ind.fitness)
+        
+        print("\n==============================")
+        print(f"GENERATION {population.generation}")
+        print(f"Best fitness: {population.best_individual.fitness}")
+        print(f"Avg fitness: {population.avg_fitness}")
+        print(f"average distance for one trip: {population.avg_distance}")
+        print(f"Diversity: {population.diversity}")
 
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
@@ -42,13 +49,6 @@ class Strategy:
         generations = 200
 
         for _ in range(generations):
-
-            print("\n==============================")
-            print(f"GENERATION {population.generation}")
-            print(f"Best fitness: {population.best_individual.fitness}")
-            print(f"Avg fitness: {population.avg_fitness}")
-            print(f"average distance for one trip: {population.avg_distance}")
-            print(f"Diversity: {population.diversity}")
 
             # -------------------------------------------------
             # 1. SELECTION (Eltern auswählen)
@@ -85,6 +85,14 @@ class Strategy:
             # 4. ELITISMUS + NEUE GENERATION
             # -------------------------------------------------
             population = population.create_next_generation(offspring_population)
+
+            print("\n==============================")
+            print(f"GENERATION {population.generation}")
+            print(f"Best fitness: {population.best_individual.fitness}")
+            print(f"Avg fitness: {population.avg_fitness}")
+            print(f"average distance for one trip: {population.avg_distance}")
+            print(f"Diversity: {population.diversity}")
+
             if population.best_individual.fitness >= populations[-1].best_individual.fitness:
                 stagnation_counter += 1
             else:
@@ -96,8 +104,7 @@ class Strategy:
             # -------------------------------------------------
             # SAVE
             # -------------------------------------------------
-            import copy
-            populations.append(copy.deepcopy(population))
+            populations.append(deepcopy(population))
 
         # -------------------------------------------------
         # FINAL OUTPUT
