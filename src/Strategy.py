@@ -6,7 +6,7 @@ import random
 
 from copy import deepcopy
 
-
+from time import perf_counter
 
 class Strategy:
 
@@ -28,9 +28,11 @@ class Strategy:
         pop_size = 30
 
         population = Population(pop_size=pop_size)
+        start_time = perf_counter()
         stagnation_counter = 0
 
         populations = [population]
+        population_creation_times = [0]
 
         print("\n--- INITIAL POPULATION ---")
         for ind in population.individuals:
@@ -46,7 +48,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 200
+        generations = 5
 
         for _ in range(generations):
 
@@ -85,9 +87,12 @@ class Strategy:
             # 4. ELITISMUS + NEUE GENERATION
             # -------------------------------------------------
             population = population.create_next_generation(offspring_population)
+            population_creation_times.append(perf_counter() - start_time)
+            start_time = perf_counter()
 
             print("\n==============================")
             print(f"GENERATION {population.generation}")
+            print("It took {:.2f} seconds to create this generation.".format(population_creation_times[-1]))
             print(f"Best fitness: {population.best_individual.fitness}")
             print(f"Avg fitness: {population.avg_fitness}")
             print(f"average distance for one trip: {population.avg_distance}")

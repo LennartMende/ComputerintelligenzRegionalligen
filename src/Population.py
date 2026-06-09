@@ -1,7 +1,7 @@
 from __future__ import annotations
 import random
 from typing import List, Tuple
-from statistics import stdev
+from statistics import stdev, mean
 
 from src.Individual import Individual
 
@@ -400,3 +400,10 @@ class Population:
         print("-"*50, "\navg_fit(p2)/avg_fit(p1) = ", f"{(sum(pop2.fitnesses)/pop1.pop_size) / (sum(pop1.fitnesses)/pop2.pop_size):3.1f}")
         print("best_indiv_fit(p2)/best_indiv_fit(p1) = ", f"{(pop2.best_individual.fitness) / (pop1.best_individual.fitness):3.1f}")
         print("-" * 80, "\n")
+    
+    @staticmethod
+    def time_evaluation(times: list[float], pop_size: int) -> None:
+        print("\n------------------------------")
+        print("Average time per generation: {:.2f} seconds".format(mean(times)[1:]))
+        print("Standard deviation of time: {:.5f} seconds".format(stdev(times)[1:]))
+        print("Average time per individual: {:.4f} seconds".format(mean(times)[1:] / pop_size))
