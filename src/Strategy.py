@@ -33,6 +33,9 @@ class Strategy:
 
         populations = [population]
         population_creation_times = [0]
+        selection_times = [0]
+        recombination_times = [0]
+        mutation_times = [0]
 
         print("\n--- INITIAL POPULATION ---")
         for ind in population.individuals:
@@ -48,14 +51,16 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 5
+        generations = 2
 
         for _ in range(generations):
 
             # -------------------------------------------------
             # 1. SELECTION (Eltern auswählen)
             # -------------------------------------------------
+            selection_time = perf_counter()
             parents = population.select()
+            selection_times.append(perf_counter() - selection_time)
 
             # TEMP Population nur für Recombination
             parent_population = Population(
@@ -68,7 +73,9 @@ class Strategy:
             # 2. RECOMBINATION
             # -------------------------------------------------
             parent_population.sort_by_latitude()
+            recombination_time = perf_counter()
             offspring = parent_population.recombine(method="ox")
+            recombination_times.append(perf_counter() - recombination_time)
 
             # -------------------------------------------------
             # 3. MUTATION
@@ -81,7 +88,9 @@ class Strategy:
 
             offspring_population.sort_by_latitude()
 
+            mutation_time = perf_counter()
             offspring_population.mutate()
+            mutation_times.append(perf_counter() - mutation_time)
 
             # -------------------------------------------------
             # 4. ELITISMUS + NEUE GENERATION
@@ -122,9 +131,16 @@ class Strategy:
         # EVALUATION
         # -------------------------------------------------
         Population.evaluation(populations[0], population)
-        GenerationVisualizer.show_avg_fit(populations=populations)
-        GenerationVisualizer.show_best_fit(populations=populations)
+        print("all times evaluated:")
+        Population.time_evaluation(times=population_creation_times, pop_size=pop_size)
+        Population.time_evaluation(times=selection_times, pop_size=pop_size, step_name="selection")
+        Population.time_evaluation(times=recombination_times, pop_size=pop_size, step_name="recombination")
+        Population.time_evaluation(times=mutation_times, pop_size=pop_size, step_name="mutation")
+        # graphical analysis
+        # GenerationVisualizer.show_avg_fit(populations=populations)
+        # GenerationVisualizer.show_best_fit(populations=populations)
         # -------------------------------------------------
-        # VISUALIZATION
+        # VISUALIZATION OF THE BEST SOLUTION
         # -------------------------------------------------
-        GenerationVisualizer.plot_map(population)
+        #GenerationVisualizer.plot_map(population)
+        

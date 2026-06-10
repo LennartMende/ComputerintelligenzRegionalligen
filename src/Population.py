@@ -402,8 +402,8 @@ class Population:
         print("-" * 80, "\n")
     
     @staticmethod
-    def time_evaluation(times: list[float], pop_size: int) -> None:
+    def time_evaluation(times: list[float], pop_size: int, step_name: str = "generation") -> None:
         print("\n------------------------------")
-        print("Average time per generation: {:.2f} seconds".format(mean(times)[1:]))
-        print("Standard deviation of time: {:.5f} seconds".format(stdev(times)[1:]))
-        print("Average time per individual: {:.4f} seconds".format(mean(times)[1:] / pop_size))
+        print(f"Average time per {step_name}", ": {:.2f} seconds".format(mean(times[1:])))
+        print("Standard deviation of time: {:.5f} seconds".format(stdev(times[1:])))
+        print("Average time per individual: {:.4f} seconds".format(mean(times[1:]) / pop_size))

@@ -1,0 +1,93 @@
+Evaluation der Implementation Stand 10.06.2026:
+Untersuchung des Einflusses von pop_size auf die Dauer des Algorithmus jeweils über 5 Generationen:
+
+pop_size | Auswertung für generations = 5
+--------------------------------------------------------
+10	 |Average time per generation: 1.11 seconds
+	 |Standard deviation of time: 0.05858 seconds
+	 |Average time per individual: 0.1107 seconds
+--------------------------------------------------------
+20	 |Average time per generation: 4.22 seconds
+	 |Standard deviation of time: 0.20001 seconds
+	 |Average time per individual: 0.2109 seconds
+--------------------------------------------------------
+30	 |Average time per generation: 8.40 seconds
+	 |	Standard deviation of time: 0.88907 seconds
+	 |	Average time per individual: 0.2801 seconds
+--------------------------------------------------------
+40	 |Average time per generation: 15.07 seconds
+	 |Standard deviation of time: 0.50298 seconds
+	 |Average time per individual: 0.3768 seconds
+--------------------------------------------------------
+50	 |Average time per generation: 23.75 seconds
+	 |Standard deviation of time: 1.16144 seconds
+	 |Average time per individual: 0.4750 seconds
+
+
+ausführliche Auswertung (jeweils 2 Generationen):
+pop_size = 10:
+Average time per generation : 1.17 seconds
+Standard deviation of time: 0.02003 seconds
+Average time per individual: 0.1167 seconds
+
+------------------------------
+Average time per selection : 0.91 seconds
+Standard deviation of time: 0.01942 seconds
+Average time per individual: 0.0908 seconds
+
+------------------------------
+Average time per recombination : 0.00 seconds
+Standard deviation of time: 0.00014 seconds
+Average time per individual: 0.0000 seconds
+
+------------------------------
+Average time per mutation : 0.00 seconds
+Standard deviation of time: 0.00003 seconds
+Average time per individual: 0.0000 seconds
+
+
+pop_size = 30:
+
+Average time per generation : 8.78 seconds
+Standard deviation of time: 0.19172 seconds
+Average time per individual: 0.2927 seconds
+
+------------------------------
+Average time per selection : 8.27 seconds
+Standard deviation of time: 0.15324 seconds
+Average time per individual: 0.2755 seconds
+
+------------------------------
+Average time per recombination : 0.00 seconds
+Standard deviation of time: 0.00024 seconds
+Average time per individual: 0.0000 seconds
+
+------------------------------
+Average time per mutation : 0.00 seconds
+Standard deviation of time: 0.00007 seconds
+Average time per individual: 0.0000 seconds
+
+
+pop_size = 50:
+Average time per generation : 22.68 seconds
+Standard deviation of time: 0.02937 seconds
+Average time per individual: 0.4535 seconds
+
+------------------------------
+Average time per selection : 21.96 seconds
+Standard deviation of time: 0.02545 seconds
+Average time per individual: 0.4391 seconds
+
+------------------------------
+Average time per recombination : 0.00 seconds
+Standard deviation of time: 0.00028 seconds
+Average time per individual: 0.0000 seconds
+
+------------------------------
+Average time per mutation : 0.00 seconds
+Standard deviation of time: 0.00007 seconds
+Average time per individual: 0.0000 seconds
+
+
+
+-> Es liegt klar an der Selektion
