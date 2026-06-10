@@ -51,7 +51,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 2
+        generations = 200
 
         for _ in range(generations):
 
@@ -137,10 +137,10 @@ class Strategy:
         Population.time_evaluation(times=recombination_times, pop_size=pop_size, step_name="recombination")
         Population.time_evaluation(times=mutation_times, pop_size=pop_size, step_name="mutation")
         # graphical analysis
-        # GenerationVisualizer.show_avg_fit(populations=populations)
-        # GenerationVisualizer.show_best_fit(populations=populations)
+        GenerationVisualizer.show_avg_fit(populations=populations)
+        GenerationVisualizer.show_best_fit(populations=populations)
         # -------------------------------------------------
         # VISUALIZATION OF THE BEST SOLUTION
         # -------------------------------------------------
-        #GenerationVisualizer.plot_map(population)
+        GenerationVisualizer.plot_map(population)
         

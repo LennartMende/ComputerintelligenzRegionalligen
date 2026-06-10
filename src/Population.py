@@ -326,7 +326,7 @@ class Population:
                 else:
                     continue
 
-        fitnesses = [self.fitnesses[index] for index in indexes]
+        fitnesses = [self.individuals[index].fitness for index in indexes]
 
         # assuming MAXIMIZATION
         best_individual = individuals[fitnesses.index(min(fitnesses))]
