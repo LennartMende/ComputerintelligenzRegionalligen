@@ -97,11 +97,13 @@ class Strategy:
             # -------------------------------------------------
             population = population.create_next_generation(offspring_population)
             population_creation_times.append(perf_counter() - start_time)
+            time_per_individual = population_creation_times[-1] / pop_size
             start_time = perf_counter()
 
             print("\n==============================")
             print(f"GENERATION {population.generation}")
             print("It took {:.2f} seconds to create this generation.".format(population_creation_times[-1]))
+            print("Time per individual: {:.6f} seconds".format(time_per_individual))
             print(f"Best fitness: {population.best_individual.fitness}")
             print(f"Avg fitness: {population.avg_fitness}")
             print(f"average distance for one trip: {population.avg_distance}")
@@ -112,7 +114,7 @@ class Strategy:
             else:
                 stagnation_counter = 0
 
-            if stagnation_counter >= 10:
+            if stagnation_counter >= 1000:
                 print("\nStagnated for 10 generations. Stopping early.")
                 break
             # -------------------------------------------------

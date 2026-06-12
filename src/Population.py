@@ -298,8 +298,11 @@ class Population:
     def mutate(self):
         for ind in self.individuals:
 
-            if self.generation < 50:
+            if self.generation < 50 and self.generation > 100:
                 ind.mutation(self.mutation_swaps)
+            
+            elif 70 <= self.generation < 100:
+                ind.mutation_from_location(self.mutation_swaps)
 
             else:
                 ind.mutation_from_location_hardcore(max_swaps=self.mutation_swaps)
