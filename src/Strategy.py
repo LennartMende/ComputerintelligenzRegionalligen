@@ -1,5 +1,6 @@
 from __future__ import annotations
 from src.Population import Population
+from src.Individual import Individual
 from src.GenerationVisualizer import GenerationVisualizer
 
 import random
@@ -9,6 +10,26 @@ from copy import deepcopy
 from time import perf_counter
 
 class Strategy:
+
+    @staticmethod
+    def parse_permutation_space_separated(input_str: str) -> list[int]:
+        return [int(x) for x in input_str.strip().split()]
+    
+    @staticmethod
+    def evaluate_manual_input(input_str: str):
+        # 1. String → Liste
+        permutation = Strategy.parse_permutation_space_separated(input_str)
+
+        # 2. Individual erzeugen
+        individual = Individual.from_permutation(permutation)
+
+        # 3. Fitness berechnen (falls noch nicht passiert)
+        fitness = individual.fitness
+
+        # 4. Ausgabe
+        print("\n--- MANUAL FITNESS CHECK ---")
+        print("Permutation:", individual.permutation)
+        print("Fitness: \n\n", fitness)
 
     @staticmethod
     def run():
@@ -114,7 +135,7 @@ class Strategy:
             else:
                 stagnation_counter = 0
 
-            if stagnation_counter >= 1000:
+            if stagnation_counter >= 10:
                 print("\nStagnated for 10 generations. Stopping early.")
                 break
             # -------------------------------------------------

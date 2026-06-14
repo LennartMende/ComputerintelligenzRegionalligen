@@ -84,8 +84,8 @@ class ClubData:
         73: (48.3145, 12.2756),  # TSV Buchbach
         74: (48.2180, 10.0923),  # FV Illertissen
         75: (48.1789, 12.8347),  # Wacker Burghausen
-        76: (48.1110, 11.5745),   # TSV 1860 München
-        77: (48.1110, 11.5745),   # FC Bayern München II
+        76: (48.1110, 11.5745),  # TSV 1860 München
+        77: (48.1110, 11.5745),  # FC Bayern München II
         78: (48.0738, 11.6158),  # SpVgg Unterhaching
         79: (48.0636, 10.8484),  # TSV Landsberg
         80: (47.9889, 7.8929),   # SC Freiburg II
