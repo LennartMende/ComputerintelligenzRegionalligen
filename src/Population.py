@@ -185,11 +185,7 @@ class Population:
     # ------------------------------------------------------------
     # CORE OX OPERATOR
     # ------------------------------------------------------------
-    def ox(
-        self,
-        parent1: List[int],
-        parent2: List[int]
-    ) -> Tuple[List[int], List[int]]:
+    def ox(self, parent1: List[int], parent2: List[int], cut1=None, cut2=None) -> Tuple[List[int], List[int]]:
         """
         Order Crossover (OX) implementation for permutation-based problems.
         Produces TWO children per crossover.
@@ -205,7 +201,18 @@ class Population:
         # --------------------------------------------------------
         # STEP 1: choose crossover points
         # --------------------------------------------------------
-        i, j = sorted(random.sample(range(size), 2))
+        if cut1 is None or cut2 is None:
+            # randomly select two crossover points (ensure cut1 < cut2); range is [0, size-1]
+            cut1, cut2 = sorted(random.sample(range(size), 2))
+
+        else:
+            # convert to 0-based indexing if needed
+            cut1 -= 1
+            cut2 -= 1
+
+            # ensure cut1 < cut2
+            if cut1 > cut2:
+                cut1, cut2 = cut2, cut1
 
         # --------------------------------------------------------
         # STEP 2: initialize empty children
@@ -216,25 +223,22 @@ class Population:
         # --------------------------------------------------------
         # STEP 3: copy segment from each parent
         # --------------------------------------------------------
-        child1[i:j + 1] = parent1[i:j + 1]
-        child2[i:j + 1] = parent2[i:j + 1]
+        child1[cut1:cut2 + 1] = parent1[cut1:cut2 + 1]
+        child2[cut1:cut2 + 1] = parent2[cut1:cut2 + 1]
 
         # --------------------------------------------------------
         # STEP 4: fill remaining positions
         # --------------------------------------------------------
         def fill_child(child, parent):
-            used = set(child)
-            pos = 0
+            used = set(x for x in child if x is not None)
 
-            for gene in parent:
-                if gene in used:
-                    continue
+            # freie Positionen von links nach rechts
+            empty_positions = [i for i, x in enumerate(child) if x is None]
 
-                while child[pos] is not None:
-                    pos = (pos + 1) % size
+            insert_values = [g for g in parent if g not in used]
 
-                child[pos] = gene
-                used.add(gene)
+            for pos, val in zip(empty_positions, insert_values):
+                child[pos] = val
 
         fill_child(child1, parent2)
         fill_child(child2, parent1)
@@ -245,11 +249,7 @@ class Population:
     # ------------------------------------------------------------
     # CORE PMX OPERATOR
     # ------------------------------------------------------------
-    def pmx(
-        self,
-        parent1: List[int],
-        parent2: List[int]
-    ) -> Tuple[List[int], List[int]]:
+    def pmx(self, parent1: List[int], parent2: List[int], cut1=None, cut2=None) -> Tuple[List[int], List[int]]:
         """Performs Partially Mapped Crossover (PMX) on two parents to produce two offspring."""
 
         if hasattr(parent1, "permutation"):
@@ -262,19 +262,32 @@ class Population:
         if size != len(parent2):
             raise ValueError("Parents must be of the same length!")
 
-        # randomly select two crossover points
-        cut1, cut2 = sorted(random.sample(range(size + 1), 2))
+        # --------------------------------------------------------
+        # STEP 1: choose crossover points
+        # --------------------------------------------------------
+        if cut1 is None or cut2 is None:
+            # randomly select two crossover points (ensure cut1 < cut2); range is [0, size-1]
+            cut1, cut2 = sorted(random.sample(range(size), 2))
+
+        else:
+            # convert to 0-based indexing if needed
+            cut1 -= 1
+            cut2 -= 1
+
+            # ensure cut1 < cut2
+            if cut1 > cut2:
+                cut1, cut2 = cut2, cut1
 
         # create offspring1 with the same length as the parents
         offspring1 = [0] * size
 
         # Copy the middle section from `parent1`
-        offspring1[cut1:cut2] = parent1[cut1:cut2]
+        offspring1[cut1:cut2+1] = parent1[cut1:cut2+1]
 
         # Copy the rest from `parent2`, resolving conflicts
-        for i in (*range(0, cut1), *range(cut2, size)):
+        for i in (*range(0, cut1), *range(cut2+1, size)):
             candidate = parent2[i]
-            while candidate in parent1[cut1:cut2]:  # handle successive mappings
+            while candidate in parent1[cut1:cut2+1]:  # handle successive mappings
                 candidate = parent2[parent1.index(candidate)]
             offspring1[i] = candidate
 
@@ -282,12 +295,12 @@ class Population:
         offspring2 = [0] * size
 
         # Copy the middle section from `parent2`
-        offspring2[cut1:cut2] = parent2[cut1:cut2]
+        offspring2[cut1:cut2+1] = parent2[cut1:cut2+1]
 
         # Copy the rest from `parent1`, resolving conflicts
-        for i in (*range(0, cut1), *range(cut2, size)):
+        for i in (*range(0, cut1), *range(cut2+1, size)):
             candidate = parent1[i]
-            while candidate in parent2[cut1:cut2]:  # handle successive mappings
+            while candidate in parent2[cut1:cut2+1]:  # handle successive mappings
                 candidate = parent1[parent2.index(candidate)]
             offspring2[i] = candidate
 
@@ -298,14 +311,17 @@ class Population:
     def mutate(self):
         for ind in self.individuals:
 
-            if self.generation < 50 and self.generation > 100:
+            if self.generation < 50:
                 ind.mutation(self.mutation_swaps)
             
-            elif 70 <= self.generation < 100:
-                ind.mutation_from_location(self.mutation_swaps)
+            elif self.generation >= 50:
+                ind.mutation_from_location(1)
+            
+            # elif 70 <= self.generation < 100:
+            #     ind.mutation_from_location(self.mutation_swaps)
 
-            else:
-                ind.mutation_from_location_hardcore(max_swaps=self.mutation_swaps)
+            # else:
+            #     ind.mutation_from_location_hardcore(max_swaps=self.mutation_swaps)
 
     
 
