@@ -3,6 +3,8 @@ import random
 from typing import List, Tuple
 from statistics import stdev, mean
 
+from collections import Counter
+
 from src.Individual import Individual
 
 
@@ -426,3 +428,57 @@ class Population:
         print(f"Average time per {step_name}", ": {:.2f} seconds".format(mean(times[1:])))
         print("Standard deviation of time: {:.5f} seconds".format(stdev(times[1:])))
         print("Average time per individual: {:.4f} seconds".format(mean(times[1:]) / pop_size))
+    
+    @staticmethod
+    def multiple_populations_evaluation(populations: list[Population]):
+        # fitness of best individuals
+        individual_population_pairs = [
+            (pop.best_individual, pop)
+            for pop in populations
+        ]
+        best_individual, best_population = min(
+            individual_population_pairs,
+            key=lambda pair: pair[0].fitness
+        )
+        worst_individual, worst_population = max(
+            individual_population_pairs,
+            key=lambda pair: pair[0].fitness
+        )
+        best_individuals = [pop.best_individual for pop in populations]
+        best_individuals_fitness = [pop.best_individual.fitness for pop in populations]
+        
+        mean_fit = mean(best_individuals_fitness)
+        worst_fit = max(best_individuals_fitness)
+        best_fit = min(best_individuals_fitness)
+
+
+        fitness_counter = Counter(best_individuals_fitness)
+        
+        print("\n", "-" * 80)
+        print("\nEvaluation of every population's best individual:")
+        print("Fitness evaluation:")
+        print("Best fitness = ", best_fit, ", worst fitness = ", worst_fit, ", mean fitness = ", mean_fit)
+        print("Fitness distribution:")
+        for fitness, count in sorted(fitness_counter.items()):
+            print(f"{fitness}: {count}x")
+
+        # diversity of the populations
+        population_diversities = [pop.diversity for pop in populations]
+        
+        mean_div = mean(population_diversities)
+        lowest_div = min(population_diversities)
+        highest_div = max(population_diversities)
+        
+ 
+        print("\nDiversity evaluation:")
+        print("Mean diversity: ", mean_div)
+        print("Highest diversity: ", highest_div)
+        print("Lowest diversity: ", lowest_div)
+        
+        print("\nBest and worst individual:")
+        print("Best individual:", best_individual.permutation)
+        print("Best individual's fitness: ", best_fit)
+        print("Best individual's diversity:", best_population.diversity)
+        print("Worst individual's fitness:", worst_individual.fitness)
+        print("Worst individual's diversity:", worst_population.diversity)
+        print("-" * 80, "\n")
