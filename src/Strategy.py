@@ -46,7 +46,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 100
+        pop_size = 30
 
         population = Population(pop_size=pop_size)
         start_time = perf_counter()
@@ -72,7 +72,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 1000
+        generations = 1200
 
         for _ in range(generations):
 
@@ -135,7 +135,7 @@ class Strategy:
             else:
                 stagnation_counter = 0
 
-            if stagnation_counter >= 900:
+            if stagnation_counter >=900:
                 print("\nStagnated for 10 generations. Stopping early.")
                 break
             # -------------------------------------------------
