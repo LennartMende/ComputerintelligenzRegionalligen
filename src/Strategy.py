@@ -9,6 +9,10 @@ from copy import deepcopy
 
 from time import perf_counter
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.parse_args()
+
 class Strategy:
 
     @staticmethod
@@ -32,7 +36,7 @@ class Strategy:
         print("Fitness: \n\n", fitness)
 
     @staticmethod
-    def run():
+    def run(pop_size, generations):
 
         random_seed = 42
 
@@ -46,8 +50,6 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        pop_size = 30
-
         population = Population(pop_size=pop_size)
         start_time = perf_counter()
         stagnation_counter = 0
@@ -72,8 +74,6 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        generations = 1200
-
         for _ in range(generations):
 
             # -------------------------------------------------
@@ -171,7 +171,7 @@ class Strategy:
 
     # evaluation for multiple populations:
     @staticmethod
-    def run_evaluation(eval_rounds: int=100, draw_map: bool = True):
+    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int):
         eval_populations = []
         for random_seed in range(1,eval_rounds + 1):
         
@@ -185,8 +185,6 @@ class Strategy:
             # -------------------------------------------------
             # INITIAL POPULATION
             # -------------------------------------------------
-            pop_size = 30
-
             population = Population(pop_size=pop_size)
             start_time = perf_counter()
             stagnation_counter = 0
@@ -211,8 +209,6 @@ class Strategy:
             # -------------------------------------------------
             # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
             # -------------------------------------------------
-            generations = 20
-
             for _ in range(generations):
 
                 # -------------------------------------------------
