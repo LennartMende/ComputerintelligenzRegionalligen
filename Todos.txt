@@ -1,10 +1,6 @@
 - VALIDIERUNG!!!
 
-- Anzahl der Swaps und Ligen variabel pogrammieren
-
 - viele Durchläufe mit aktuellem Setup (unterschiedliche Seeds, unterschiedlich viele Generationen, Abbruchkriterium)
-- 20 oder 40 Ligen Extremfall (immer alle beide oder4 beieinander)
-- 2 Ligen oder generell andere Ligengröße
 - mal random Punkte aussuchen (bspw. in Rechteck)
 - multikriterielle Optimierung -> Fahrtweg sollte in allen Ligen möglichst gleich sein
 
