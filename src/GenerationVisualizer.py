@@ -97,66 +97,108 @@ class GenerationVisualizer:
         return result
 
 
+    def compute_colors_and_markers(population: Population):
+        COLORS = ["blue", "green", "orange", "red", "grey", "black", "purple", "pink", "brown", "cyan"]
+        MARKERS = ["o", "s", "^", "X"]
+
+        # compute used markers and colors based on len(population.individuals[0].permutation) und population.league_size
+        team_count = len(population.individuals[0].permutation)
+        league_size = population.league_size
+        league_count = team_count // league_size
+
+        MARKERS_count = (league_count // len(COLORS) if league_count % len(COLORS) == 0 else league_count // len(COLORS) + 1)
+        COLORS_count = league_count // MARKERS_count
+
+        COLORS = COLORS[:COLORS_count]
+        MARKERS = MARKERS[:MARKERS_count]
+
+        return COLORS, MARKERS
+
+
 
     def plot_map(population: Population):
-    
-        COLORS = ["blue", "green", "orange", "red", "grey", "black", "purple", "pink"]#, "brown", ""]
+        COLORS, MARKERS = GenerationVisualizer.compute_colors_and_markers(population)
 
         individual = population.best_individual
         perm = individual.permutation
 
         print("population.league_size = ", population.league_size)
 
-        leagues = [perm[i:i+population.league_size] for i in range(0, len(perm), population.league_size)]
+        leagues = [
+            perm[i:i + population.league_size]
+            for i in range(0, len(perm), population.league_size)
+        ]
 
-        plt.figure()
+        # -------------------------------------------------
+        # FIGURE + SUBPLOTS
+        # -------------------------------------------------
+        fig = plt.figure(figsize=(14, 15))
+        gs = fig.add_gridspec(1, 2, width_ratios=[1, 4])
 
+        ax_leg = fig.add_subplot(gs[0])
+        ax_map = fig.add_subplot(gs[1])
+
+        # -------------------------------------------------
+        # MAP SETUP
+        # -------------------------------------------------
         limits = GenerationVisualizer.project_extreme_points()
+        projected = GenerationVisualizer.project_club_coords()
 
-        # Bild laden und anzeigen im richtigen Koordinatensystem
-        base_path = os.path.dirname(__file__)          # .../src
-        project_root = os.path.dirname(base_path)      # .../ (eine Ebene höher)
-
+        base_path = os.path.dirname(__file__)
+        project_root = os.path.dirname(base_path)
         img_path = os.path.join(project_root, "images", "germany2.png")
 
         img = plt.imread(img_path)
-        plt.imshow(img, extent=[limits["west"], limits["east"], limits["south"], limits["north"]])
+        ax_map.imshow(
+            img,
+            extent=[limits["west"], limits["east"], limits["south"], limits["north"]]
+        )
 
-        projected = GenerationVisualizer.project_club_coords()
+        # -------------------------------------------------
+        # PLOTTING
+        # -------------------------------------------------
+        from itertools import product
 
-        for league_idx, (league, color) in enumerate(zip(leagues, COLORS)):
+        styles = list(product(COLORS, MARKERS))
 
+        for league_idx, (league, (color, marker)) in enumerate(
+            zip(leagues, styles)
+        ):
             coords = [projected[i] for i in league]
 
             lats = [c[0] for c in coords]
             lons = [c[1] for c in coords]
 
-            plt.scatter(lats, lons, c=color, label=f"Liga {league_idx+1}")
+            ax_map.scatter(
+                lats,
+                lons,
+                c=color,
+                marker=marker,
+                label=f"Liga {league_idx+1}"
+            )
 
-            # IDs hinzufügen
             for club_id, (lat, lon) in zip(league, coords):
+                ax_map.annotate(str(club_id), (lat, lon))
 
-                plt.annotate(
-                    str(club_id),
-                    (lat, lon),
-                    xytext=(3, 3),                 # kleiner Offset
-                    textcoords="offset points",
-                    fontsize=7,
-                    alpha=0.8
-                )
-            
+        # -------------------------------------------------
+        # LEGEND
+        # -------------------------------------------------
+        handles, labels = ax_map.get_legend_handles_labels()
 
-        plt.title("Bestes Individuum (Ligenverteilung)")
-        # plt.xlabel("Longitude")
-        # plt.ylabel("Latitude")
-        plt.legend(loc="upper left")
-        # plt.grid(True)
+        ax_leg.legend(handles, labels, loc="upper left")
+        ax_leg.axis("off")
 
-        # Achsenbegrenzungen auf Deutschland setzen
-        plt.xlim(limits["west"], limits["east"])
-        plt.ylim(limits["south"], limits["north"])
+        # -------------------------------------------------
+        # FINAL FORMATTING
+        # -------------------------------------------------
+        ax_map.set_title("Bestes Individuum (Ligenverteilung)")
+        ax_map.set_xlim(limits["west"], limits["east"])
+        ax_map.set_ylim(limits["south"], limits["north"])
+        ax_map.axis("off")
 
-        # Seitenverhältnis beibehalten
-        #plt.axis("equal")
-        plt.axis("off")
         plt.show()
+
+
+
+if __name__ == "__main__":
+    GenerationVisualizer.compute_colors_and_markers()

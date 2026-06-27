@@ -175,7 +175,7 @@ class Strategy:
 
     # evaluation for multiple populations:
     @staticmethod
-    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int):
+    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int, leagues: int):
         eval_populations = []
         for random_seed in range(1,eval_rounds + 1):
         
@@ -189,7 +189,7 @@ class Strategy:
             # -------------------------------------------------
             # INITIAL POPULATION
             # -------------------------------------------------
-            population = Population(pop_size=pop_size)
+            population = Population(leagues=leagues, pop_size=pop_size)
             start_time = perf_counter()
             stagnation_counter = 0
 
@@ -199,9 +199,6 @@ class Strategy:
             recombination_times = [0]
             mutation_times = [0]
 
-            # print("\n--- INITIAL POPULATION ---")
-            # for ind in population.individuals:
-            #     print(ind.permutation, ind.fitness)
             
             print("\n==============================")
             print(f"GENERATION {population.generation}")
@@ -225,6 +222,7 @@ class Strategy:
                 # TEMP Population nur für Recombination
                 parent_population = Population(
                     pop_size=pop_size,
+                    leagues=leagues,
                     individuals=parents,
                     generation=population.generation
                 )
@@ -242,6 +240,7 @@ class Strategy:
                 # -------------------------------------------------
                 offspring_population = Population(
                     pop_size=pop_size,
+                    leagues=leagues,
                     individuals=offspring,
                     generation=population.generation + 1
                 )
@@ -255,7 +254,7 @@ class Strategy:
                 # -------------------------------------------------
                 # 4. ELITISMUS + NEUE GENERATION
                 # -------------------------------------------------
-                population = population.create_next_generation(offspring_population)
+                population = population.create_next_generation(leagues=leagues, offspring_population=offspring_population)
                 population_creation_times.append(perf_counter() - start_time)
                 time_per_individual = population_creation_times[-1] / pop_size
                 start_time = perf_counter()
@@ -286,10 +285,6 @@ class Strategy:
             # -------------------------------------------------
             # FINAL OUTPUT
             # -------------------------------------------------
-            # print("\n--- FINAL POPULATION ---")
-            # for ind in population.individuals:
-            #     print(ind.permutation, ind.fitness)
-
             eval_populations.append(population)
         
 
