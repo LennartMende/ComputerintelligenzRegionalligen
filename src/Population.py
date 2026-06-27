@@ -24,6 +24,7 @@ class Population:
     def __init__(self,
         pop_size:int,
         individuals: List[Individual] | None = None,
+        leagues: int = 4,
         generation: int = 1,
         recombination_rate: float = 1.0,
         tournament_size: int = 5,
@@ -49,9 +50,17 @@ class Population:
 
         # Create initial population or reuse given individuals
         if individuals is None:
-            self.individuals = [Individual() for _ in range(pop_size)]
+            self.individuals = [Individual() for _ in range(self.pop_size)]
         else:
             self.individuals = individuals
+        
+        if len(self.individuals[0].permutation) % leagues == 0:
+            self.league_size = len(self.individuals[0].permutation) // leagues 
+        else:
+            raise ValueError("len(self.individuals) must be divisible by leagues")
+
+        for ind in self.individuals:
+            ind.set_league_size(self.league_size)
 
         # for debugging purposes
         self.individuals_after_recombination = []
@@ -89,7 +98,7 @@ class Population:
     @property
     def avg_distance(self) -> float:
         """Returns the average distance for one trip."""
-        return self.best_individual.fitness / (80 * 19)
+        return self.best_individual.fitness / (80 * self.league_size - 1)
 
     @property
     def diversity(self) -> float:

@@ -11,7 +11,7 @@ from src.FitnessCalculator import FitnessCalculator
 
 
 class Individual:
-    def __init__(self, permutation: list[int] | None = None):
+    def __init__(self, permutation: list[int] | None = None, real_clubs: bool = True):
         self.club_ids = list(ClubData.club_coords.keys())   # club_ids is a list of integers from 1 to 80 that were used as keys in the club_coords dictionary in ClubData.py
 
         if permutation is None:
@@ -19,7 +19,9 @@ class Individual:
         else:
             self.permutation = permutation
         
-        self.permutation_size = 80
+        self.real_clubs = real_clubs
+        self.permutation_size = 80 if real_clubs else len(permutation)
+        self.league_size = None
 
     def _create_individual(self) -> list[int]:
         """Creates a random individual (a random permutation of the clubs)."""
@@ -45,6 +47,9 @@ class Individual:
         '''Calculate the fitness of an individual'''
         fitness = FitnessCalculator.individual_fitness(self)
         return fitness
+    
+    def set_league_size(self, league_size) -> None:
+        self.league_size = league_size
     
     # old version of mutation method, new version is below
     # def mutation(self, mutation_swaps: int) -> None: # TODO: swap with a team from another group instead of random swap

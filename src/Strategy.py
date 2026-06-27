@@ -36,7 +36,7 @@ class Strategy:
         print("Fitness: \n\n", fitness)
 
     @staticmethod
-    def run(pop_size, generations):
+    def run(pop_size: int, generations: int, leagues: int, real_clubs: bool, number_of_points: int = 80):
 
         random_seed = 42
 
@@ -50,7 +50,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        population = Population(pop_size=pop_size)
+        population = Population(pop_size=pop_size, leagues=leagues)
         start_time = perf_counter()
         stagnation_counter = 0
 
