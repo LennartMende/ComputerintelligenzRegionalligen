@@ -100,12 +100,14 @@ class GenerationVisualizer:
 
     def plot_map(population: Population):
     
-        COLORS = ["blue", "green", "orange", "red"]
+        COLORS = ["blue", "green", "orange", "red", "grey", "black", "purple", "pink"]#, "brown", ""]
 
         individual = population.best_individual
         perm = individual.permutation
 
-        leagues = [perm[i:i+20] for i in range(0, len(perm), 20)]
+        print("population.league_size = ", population.league_size)
+
+        leagues = [perm[i:i+population.league_size] for i in range(0, len(perm), population.league_size)]
 
         plt.figure()
 

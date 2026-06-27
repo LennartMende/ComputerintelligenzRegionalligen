@@ -1,17 +1,16 @@
 from src.Strategy import Strategy
-print("Beginn")
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--default", action="store_true", help="if default scenario should be optimized")
 parser.add_argument("--eval", action="store_true", help="evaluate multiple populations")
 parser.add_argument("--draw_map", action="store_true", help="draw map during evaluation")
-parser.add_argument("--real-clubs", "--real_clubs", action="store_true", help="use real clubs for the optimization")
+parser.add_argument("--real-clubs", "--real_clubs", action="store_false", help="use real clubs for the optimization")
 
 parser.add_argument("--eval_rounds", help="only needed if evaluation", type = int, default=30)
 parser.add_argument("--pop_size", help="number of individuals per generation", type = int, default=30)
-parser.add_argument("--generations", help="number of generations", type = int, default=20)
-parser.add_argument("--leagues", help="number of leagues", type = int, default=4)
+parser.add_argument("--generations", help="number of generations", type = int, default=200)
+parser.add_argument("--leagues", help="number of leagues", type = int, default=8)
 args = parser.parse_args()
 
 print(args)

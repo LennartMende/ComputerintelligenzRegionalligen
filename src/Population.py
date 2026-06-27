@@ -392,7 +392,7 @@ class Population:
             ind.sort_by_latitude()
 
 
-    def create_next_generation(self, offspring_population, elite_size: int = 2):
+    def create_next_generation(self, leagues, offspring_population, elite_size: int = 2):
         """
         Combines elitism + offspring to create next generation
         """
@@ -412,6 +412,7 @@ class Population:
 
         return Population(
             pop_size=self.pop_size,
+            leagues=leagues,
             individuals=new_individuals,
             generation=self.generation + 1
         )

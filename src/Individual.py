@@ -78,7 +78,7 @@ class Individual:
 
         swaps_done = 0
         attempts = 0
-        max_attempts = mutation_swaps * 20
+        max_attempts = mutation_swaps * self.league_size
 
         #print("\n--- Mutation Start ---")
 
@@ -88,7 +88,7 @@ class Individual:
             j = random.randrange(size)
 
             # Liga-Constraint
-            if (i // 20) == (j // 20):
+            if (i // self.league_size) == (j // self.league_size):
                 attempts += 1
                 continue
 
@@ -101,7 +101,7 @@ class Individual:
             swaps_done += 1
             attempts += 1
 
-            #print(f"Swap {swaps_done}: i={i} (Liga {i//20}) <-> j={j} (Liga {j//20})")
+            #print(f"Swap {swaps_done}: i={i} (Liga {i//self.league_size}) <-> j={j} (Liga {j//self.league_size})")
 
         #print("--- Mutation Ende ---\n")
 
@@ -113,7 +113,7 @@ class Individual:
             return ((a[0] - b[0])**2 + (a[1] - b[1])**2) ** 0.5
 
         size = len(self.permutation)
-        leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+        leagues = [self.permutation[i:i+self.league_size] for i in range(0, size, self.league_size)]
 
         # --- Zentren ---
         centroids = []
@@ -158,7 +158,7 @@ class Individual:
                 [l for l in range(4) if l != league_idx]
             )
 
-            target_range = range(target_league * 20, (target_league + 1) * 20)
+            target_range = range(target_league * self.league_size, (target_league + 1) * self.league_size)
             swap_idx = random.choice(list(target_range))
 
             self.permutation[idx], self.permutation[swap_idx] = (
@@ -176,7 +176,7 @@ class Individual:
             return ((a[0] - b[0])**2 + (a[1] - b[1])**2) ** 0.5
 
         size = len(self.permutation)
-        leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+        leagues = [self.permutation[i:i+self.league_size] for i in range(0, size, self.league_size)]
 
         centroids = []
         for league in leagues:
@@ -232,7 +232,7 @@ class Individual:
 
             # --- Swap ---
             idx1 = self.permutation.index(worst_team)
-            target_range = range(best_target * 20, (best_target + 1) * 20)
+            target_range = range(best_target * self.league_size, (best_target + 1) * self.league_size)
             idx2 = random.choice(list(target_range))
 
             self.permutation[idx1], self.permutation[idx2] = (
@@ -240,7 +240,7 @@ class Individual:
                 self.permutation[idx1],
             )
 
-            leagues = [self.permutation[i:i+20] for i in range(0, size, 20)]
+            leagues = [self.permutation[i:i+self.league_size] for i in range(0, size, self.league_size)]
 
             swaps_done += 1
 
@@ -250,7 +250,7 @@ class Individual:
         """Sorts the 4 groups by their average latitude (north to south)."""
 
         groups = [
-            self.permutation[i * 20:(i + 1) * 20]
+            self.permutation[i * self.league_size:(i + 1) * self.league_size]
             for i in range(4)
         ]
 
