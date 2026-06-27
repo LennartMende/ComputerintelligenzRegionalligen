@@ -19,11 +19,11 @@ class FitnessCalculator:
         return haversine(a, b)
 
     @staticmethod
-    def _fitness_for_one_club(list_of_clubs: list[tuple[float, float]], index) -> float:
+    def _fitness_for_one_club(list_of_clubs: list[tuple[float, float]], index: int, leagues: int) -> float:
         """Calculates the fitness for one club by summing the distances to all other clubs in the same league."""
-        league = index // 20
+        league = index // leagues
         fitness = 0
-        for i in range(league * 20, league * 20 + 20):
+        for i in range(league * leagues, league * leagues + leagues):
             if i != index:
                 fitness += FitnessCalculator._dist(list_of_clubs[index], list_of_clubs[i])
         return fitness
@@ -36,7 +36,7 @@ class FitnessCalculator:
 
         total_fitness = 0
         for i in range(len(coords)):
-            total_fitness += FitnessCalculator._fitness_for_one_club(coords, i)
+            total_fitness += FitnessCalculator._fitness_for_one_club(list_of_clubs=coords, index=i, leagues=individual.league_size)
 
         return total_fitness
     

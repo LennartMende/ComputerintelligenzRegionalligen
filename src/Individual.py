@@ -247,11 +247,10 @@ class Individual:
 
 
     def sort_by_latitude(self) -> None:
-        """Sorts the 4 groups by their average latitude (north to south)."""
-
+        """Sorts the leagues groups by their average latitude (north to south)."""
         groups = [
             self.permutation[i * self.league_size:(i + 1) * self.league_size]
-            for i in range(4)
+            for i in range(len(self.permutation)//self.league_size)
         ]
 
         groups.sort(

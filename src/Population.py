@@ -55,9 +55,11 @@ class Population:
             self.individuals = individuals
         
         if len(self.individuals[0].permutation) % leagues == 0:
-            self.league_size = len(self.individuals[0].permutation) // leagues 
+            self.league_size = len(self.individuals[0].permutation) // leagues
+            print(f"len(self.individuals[0].permutation) = {len(self.individuals[0].permutation)} and leagues = {leagues}")
         else:
-            raise ValueError("len(self.individuals) must be divisible by leagues")
+            raise ValueError(f"len(self.individuals[0].permutation) = {len(self.individuals[0].permutation)} and leagues = {leagues}\n\
+                             But self.individuals[0].permutation must be divisible by leagues")
 
         for ind in self.individuals:
             ind.set_league_size(self.league_size)
@@ -320,6 +322,7 @@ class Population:
     
 
     def mutate(self):
+        print("mutation: len(self.individuals[0].permutation) = ", len(self.individuals[0].permutation))
         for ind in self.individuals:
 
             if self.generation < 50:
@@ -386,7 +389,7 @@ class Population:
         return new_population
     
     def sort_by_latitude(self) -> None:
-        """Sorts the 4 groups by their average latitude (north to south)."""
+        """Sorts the leagues groups by their average latitude (north to south)."""
 
         for ind in self.individuals:
             ind.sort_by_latitude()

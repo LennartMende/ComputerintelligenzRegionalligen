@@ -18,8 +18,6 @@ print(args)
 # Strategy.evaluate_manual_input("1 2 3 4 5 6 7 9 10 11 12 13 14 18 19 21 23 26 28 29 8 15 16 17 20 22 24 25 35 36 37 38 42 43 46 49 50 51 52 54 27 30 31 32 33 34 39 40 41 44 45 47 48 53 55 56 58 60 61 62 57 59 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80")
 # Strategy.run() # for a normal optimzation of 1 population
 
-print("Ich bin die richtige main")
-
 if args.eval: # for an optimization and evaluation of multiple populations
     Strategy.run_evaluation(eval_rounds=args.eval_rounds, draw_map=args.draw_map, pop_size=args.pop_size, generations=args.generations) 
 else: # for a normal optimzation of 1 population

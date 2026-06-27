@@ -91,8 +91,6 @@ class Strategy:
                 generation=population.generation
             )
 
-            print("parent_population.league_size = ", parent_population.league_size)
-
             # -------------------------------------------------
             # 2. RECOMBINATION
             # -------------------------------------------------
@@ -112,18 +110,17 @@ class Strategy:
                 generation=population.generation + 1
             )
 
+            
             offspring_population.sort_by_latitude()
 
             mutation_time = perf_counter()
             offspring_population.mutate()
             mutation_times.append(perf_counter() - mutation_time)
-            print("offspring_population.league_size = ", offspring_population.league_size)
 
             # -------------------------------------------------
             # 4. ELITISMUS + NEUE GENERATION
             # -------------------------------------------------
             population = population.create_next_generation(offspring_population=offspring_population, leagues=leagues)
-            print("population.league_size = ", population.league_size)
             population_creation_times.append(perf_counter() - start_time)
             time_per_individual = population_creation_times[-1] / pop_size
             start_time = perf_counter()
