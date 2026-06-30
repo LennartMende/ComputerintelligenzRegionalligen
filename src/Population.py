@@ -329,7 +329,7 @@ class Population:
                 ind.mutation_from_location(self.mutation_swaps)
             
             elif self.generation >= 50:
-                ind.mutation_from_location(1)
+                ind.mutation(1)
             
             # elif 70 <= self.generation < 100:
             #     ind.mutation_from_location(self.mutation_swaps)
