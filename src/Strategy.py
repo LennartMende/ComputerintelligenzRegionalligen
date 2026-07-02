@@ -36,7 +36,7 @@ class Strategy:
         print("Fitness: \n\n", fitness)
 
     @staticmethod
-    def run(pop_size: int, generations: int, leagues: int, real_clubs: bool, number_of_points: int = 80):
+    def run(pop_size: int, generations: int, leagues: int, real_clubs: bool, number_of_points: int = 80, stagnation_counter_limit: int = 100):
 
         random_seed = 42
 
@@ -139,8 +139,8 @@ class Strategy:
             else:
                 stagnation_counter = 0
 
-            if stagnation_counter >=900:
-                print("\nStagnated for 10 generations. Stopping early.")
+            if stagnation_counter >= stagnation_counter_limit:
+                print("\nStagnated for {} generations. Stopping early.".format(stagnation_counter_limit))
                 break
             # -------------------------------------------------
             # SAVE
@@ -175,7 +175,7 @@ class Strategy:
 
     # evaluation for multiple populations:
     @staticmethod
-    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int, leagues: int):
+    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int, leagues: int, stagnation_counter_limit: int):
         eval_populations = []
         for random_seed in range(1,eval_rounds + 1):
         
@@ -274,8 +274,8 @@ class Strategy:
                     stagnation_counter = 0
 
                 
-                if stagnation_counter >=900:
-                    print("\nStagnated for 900 generations. Stopping early.")
+                if stagnation_counter >= stagnation_counter_limit:
+                    print("\nStagnated for {} generations. Stopping early.".format(stagnation_counter_limit))
                     break
                 # -------------------------------------------------
                 # SAVE

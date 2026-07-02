@@ -326,7 +326,7 @@ class Population:
         for ind in self.individuals:
 
             if self.generation < 50:
-                ind.mutation_from_location(self.mutation_swaps)
+                ind.mutation(self.mutation_swaps)
             
             elif self.generation >= 50:
                 ind.mutation(1)

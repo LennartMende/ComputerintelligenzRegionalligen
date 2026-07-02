@@ -154,8 +154,10 @@ class Individual:
         # --- Swaps durchführen ---
         for idx, club, league_idx in candidates:
 
+            num_leagues = len(self.permutation) // self.league_size
+
             target_league = random.choice(
-                [l for l in range(4) if l != league_idx]
+                [l for l in range(num_leagues) if l != league_idx]
             )
 
             target_range = range(target_league * self.league_size, (target_league + 1) * self.league_size)
@@ -210,7 +212,7 @@ class Individual:
             best_target = None
             best_gain = 0
 
-            for target_l in range(4):
+            for target_l in range(len(leagues)):
                 if target_l == worst_league:
                     continue
 
