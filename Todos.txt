@@ -1,7 +1,7 @@
 - VALIDIERUNG!!!
 
-- viele Durchläufe mit aktuellem Setup (unterschiedliche Seeds, unterschiedlich viele Generationen, Abbruchkriterium)
-- mal random Punkte aussuchen (bspw. in Rechteck)
+- viele Durchläufe mit aktuellem Setup (unterschiedliche Seeds, unterschiedlich viele Generationen, Abbruchkriterium) -> automatische Auswertung (csv oder so)
+- mal random Punkte aussuchen (bspw. in Rechteck), Anzahl der Punkte ändern
 - multikriterielle Optimierung -> Fahrtweg sollte in allen Ligen möglichst gleich sein
 
 - Constraints am Anfang (sinnvolle Initialpopulation)
