@@ -6,6 +6,7 @@ from statistics import stdev, mean
 from collections import Counter
 
 from src.Individual import Individual
+from src.LocationProvider import LocationProvider
 
 
 
@@ -24,6 +25,7 @@ class Population:
     def __init__(self,
         pop_size:int,
         individuals: List[Individual] | None = None,
+        location_provider: LocationProvider | None = None,
         leagues: int = 4,
         generation: int = 1,
         recombination_rate: float = 1.0,
@@ -36,6 +38,7 @@ class Population:
         Args:
             pop_size: Size of the population
             individuals: Optional list of individuals (used for next generation)
+            location_provider: LocationProvider instance for creating individuals
             generation: Generation index
             recombination_rate: Probability of recombination
             tournament_size: Size of the tournament for selection
@@ -47,10 +50,13 @@ class Population:
         self.recombination_rate = recombination_rate
         self.tournament_size = tournament_size
         self.mutation_swaps = mutation_swaps
+        self.location_provider = location_provider
 
         # Create initial population or reuse given individuals
         if individuals is None:
-            self.individuals = [Individual() for _ in range(self.pop_size)]
+            if location_provider is None:
+                raise ValueError("location_provider must be provided when creating new individuals")
+            self.individuals = [Individual(location_provider=location_provider) for _ in range(self.pop_size)]
         else:
             self.individuals = individuals
         
@@ -189,7 +195,7 @@ class Population:
                 # no crossover → clone parents
                 child1, child2 = parent1.permutation[:], parent2.permutation[:]
 
-            new_population.extend([Individual.from_permutation(child1), Individual.from_permutation(child2)])
+            new_population.extend([Individual.from_permutation(child1, location_provider=self.location_provider), Individual.from_permutation(child2, location_provider=self.location_provider)])
 
         # optional: store result
         self.individuals_after_recombination = new_population
@@ -399,27 +405,50 @@ class Population:
 
     def create_next_generation(self, leagues, offspring_population, elite_size: int = 2):
         """
-        Combines elitism + offspring to create next generation
+        Combines elitism + offspring to create next generation.
+        GARANTIERT, dass die Elite erhalten bleiben!
         """
 
         # -------------------------------------------------
-        # ELITE AUS ALTER POPULATION
+        # ELITE AUS ALTER POPULATION (Die besten)
         # -------------------------------------------------
-        elites = sorted(self.individuals, key=lambda ind: ind.fitness)[:elite_size]
+        sorted_self = sorted(self.individuals, key=lambda ind: ind.fitness)
+        elites = sorted_self[:elite_size]
 
         # -------------------------------------------------
-        # REST AUS OFFSPRING
+        # REST AUS OFFSPRING (Die besten)
         # -------------------------------------------------
         remaining = self.pop_size - elite_size
         offspring_sorted = sorted(offspring_population.individuals, key=lambda ind: ind.fitness)
-
-        new_individuals = elites + offspring_sorted[:remaining]
+        
+        # WICHTIG: Nur so viele Offspring nehmen, wie wir brauchen!
+        offspring_to_add = offspring_sorted[:remaining]
+        
+        best_elite_fitness = min(ind.fitness for ind in elites)
+        best_offspring_fitness = min(ind.fitness for ind in offspring_to_add) if offspring_to_add else float('inf')
+        
+        print(f"\n[ELITISM DEBUG] SELF has {len(self.individuals)} individuals")
+        print(f"[ELITISM DEBUG] Best fitness in SELF: {min(ind.fitness for ind in self.individuals)}")
+        print(f"[ELITISM DEBUG] Sorted[0] fitness: {sorted_self[0].fitness}")
+        print(f"[ELITISM DEBUG] Elite[0] fitness: {elites[0].fitness}")
+        print(f"[ELITISM DEBUG] Best elite fitness: {best_elite_fitness}")
+        print(f"[ELITISM DEBUG] Best offspring fitness: {best_offspring_fitness}")
+        
+        # Zusammenfügen: Elite ZUERST, dann Offspring
+        new_individuals = elites + offspring_to_add
+        
+        best_new_fitness = min(ind.fitness for ind in new_individuals)
+        
+        print(f"[ELITISM DEBUG] Best in NEW population: {best_new_fitness}")
+        print(f"[ELITISM DEBUG] Elites preserved: {best_new_fitness == best_elite_fitness}")
+        print(f"[ELITISM DEBUG] New individuals count: {len(new_individuals)} (expected: {self.pop_size})")
 
         return Population(
             pop_size=self.pop_size,
             leagues=leagues,
             individuals=new_individuals,
-            generation=self.generation + 1
+            generation=self.generation + 1,
+            location_provider=self.location_provider
         )
 
     # ------------------------------------------------------------

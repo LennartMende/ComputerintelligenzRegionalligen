@@ -1,4 +1,3 @@
-from src.ClubData import ClubData
 from haversine import haversine
 
 
@@ -6,13 +5,6 @@ from haversine import haversine
 
 
 class FitnessCalculator:
-    @staticmethod
-    def clubs_to_coords(id_list):
-        if hasattr(id_list, "permutation"):
-            id_list = id_list.permutation
-
-        return [ClubData.club_coords[id] for id in id_list]
-
     @staticmethod
     def _dist(a: tuple[float, float], b: tuple[float, float]) -> float:
         """Calculates the Euclidean distance between two points a and b."""
@@ -32,7 +24,7 @@ class FitnessCalculator:
     def individual_fitness(individual) -> float:
         list_of_clubs = individual.permutation
 
-        coords = FitnessCalculator.clubs_to_coords(list_of_clubs)
+        coords = individual.clubs_to_coords(list_of_clubs)
 
         total_fitness = 0
         for i in range(len(coords)):

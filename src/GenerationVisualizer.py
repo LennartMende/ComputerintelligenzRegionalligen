@@ -44,11 +44,12 @@ class GenerationVisualizer:
         plt.plot(gens, best_fits)
         plt.show()
     
-    @staticmethod
-    def project_club_coords():
+    def project_club_coords(self):
         projected = {}
 
-        for club_id, (lat, lon) in ClubData.club_coords.items():
+        locations = self.population.location_provider.get_locations()
+
+        for club_id, (lat, lon) in locations.items():
 
             x_m, y_m = GenerationVisualizer.TRANSFORMER.transform(
                 lon,
@@ -143,7 +144,17 @@ class GenerationVisualizer:
         # MAP SETUP
         # -------------------------------------------------
         limits = GenerationVisualizer.project_extreme_points()
-        projected = GenerationVisualizer.project_club_coords()
+        visualizer = GenerationVisualizer(population)
+        projected = visualizer.project_club_coords()
+
+        # Add padding to limits so nothing gets cut off
+        padding = 0  # km
+        limits = {
+            "west": limits["west"] - padding,
+            "east": limits["east"] + padding,
+            "south": limits["south"] - padding,
+            "north": limits["north"] + padding,
+        }
 
         base_path = os.path.dirname(__file__)
         project_root = os.path.dirname(base_path)

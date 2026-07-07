@@ -3,6 +3,7 @@ from src.Population import Population
 from src.Individual import Individual
 from src.GenerationVisualizer import GenerationVisualizer
 from src.Evaluator import Evaluator
+from src.LocationProvider import get_location_provider
 from dataclasses import dataclass
 
 import random
@@ -10,10 +11,6 @@ import random
 from copy import deepcopy
 
 from time import perf_counter
-
-import argparse
-parser = argparse.ArgumentParser()
-parser.parse_args()
 
 
 @dataclass
@@ -36,17 +33,20 @@ class Strategy:
         return [int(x) for x in input_str.strip().split()]
     
     @staticmethod
-    def evaluate_manual_input(input_str: str):
+    def evaluate_manual_input(input_str: str, use_real_clubs: bool = True):
         # 1. String → Liste
         permutation = Strategy.parse_permutation_space_separated(input_str)
 
-        # 2. Individual erzeugen
-        individual = Individual.from_permutation(permutation)
+        # 2. Create LocationProvider
+        location_provider = get_location_provider(use_real_clubs=use_real_clubs, n=len(permutation))
 
-        # 3. Fitness berechnen (falls noch nicht passiert)
+        # 3. Individual erzeugen
+        individual = Individual.from_permutation(permutation, location_provider=location_provider)
+
+        # 4. Fitness berechnen (falls noch nicht passiert)
         fitness = individual.fitness
 
-        # 4. Ausgabe
+        # 5. Ausgabe
         print("\n--- MANUAL FITNESS CHECK ---")
         print("Permutation:", individual.permutation)
         print("Fitness: \n\n", fitness)
@@ -71,9 +71,19 @@ class Strategy:
             print(f"No random seed provided. Results may vary between runs.\n")
 
         # -------------------------------------------------
+        # CREATE LOCATION PROVIDER
+        # -------------------------------------------------
+        print(f"\n[DEBUG Strategy] run() called with real_clubs={real_clubs}, number_of_points={number_of_points}")
+        location_provider = get_location_provider(use_real_clubs=real_clubs, n=number_of_points)
+        locations = location_provider.get_locations()
+        print(f"[DEBUG Strategy] Location provider created. Got {len(locations)} locations.")
+        print(f"[DEBUG Strategy] First 3 location IDs: {list(locations.keys())[:3]}")
+        print(f"[DEBUG Strategy] First location value: {list(locations.values())[0]}")
+
+        # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        population = Population(pop_size=pop_size, leagues=leagues, tournament_size=tournament_size)
+        population = Population(pop_size=pop_size, leagues=leagues, tournament_size=tournament_size, location_provider=location_provider)
         start_time = perf_counter()
         stagnation_counter = 0
 
@@ -111,7 +121,8 @@ class Strategy:
                 pop_size=pop_size,
                 leagues=leagues,
                 individuals=parents,
-                generation=population.generation
+                generation=population.generation,
+                location_provider=location_provider
             )
 
             # -------------------------------------------------
@@ -130,7 +141,8 @@ class Strategy:
                 pop_size=pop_size,
                 leagues=leagues,
                 individuals=offspring,
-                generation=population.generation + 1
+                generation=population.generation + 1,
+                location_provider=location_provider
             )
 
             
@@ -220,9 +232,14 @@ class Strategy:
                 print(f"No random seed provided. Results may vary between runs.\n")
 
             # -------------------------------------------------
+            # CREATE LOCATION PROVIDER
+            # -------------------------------------------------
+            location_provider = get_location_provider(use_real_clubs=real_clubs, n=number_of_points)
+
+            # -------------------------------------------------
             # INITIAL POPULATION
             # -------------------------------------------------
-            population = Population(leagues=leagues, pop_size=pop_size)
+            population = Population(leagues=leagues, pop_size=pop_size, location_provider=location_provider)
             start_time = perf_counter()
             stagnation_counter = 0
 
@@ -257,7 +274,8 @@ class Strategy:
                     pop_size=pop_size,
                     leagues=leagues,
                     individuals=parents,
-                    generation=population.generation
+                    generation=population.generation,
+                    location_provider=location_provider
                 )
 
                 # -------------------------------------------------
@@ -275,7 +293,8 @@ class Strategy:
                     pop_size=pop_size,
                     leagues=leagues,
                     individuals=offspring,
-                    generation=population.generation + 1
+                    generation=population.generation + 1,
+                    location_provider=location_provider
                 )
 
                 offspring_population.sort_by_latitude()

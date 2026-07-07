@@ -3,7 +3,7 @@ import random
 from random import randint
 from statistics import mean
 
-from src.ClubData import ClubData
+from src.LocationProvider import LocationProvider
 from src.FitnessCalculator import FitnessCalculator
 
 
@@ -11,16 +11,19 @@ from src.FitnessCalculator import FitnessCalculator
 
 
 class Individual:
-    def __init__(self, permutation: list[int] | None = None, real_clubs: bool = True):
-        self.club_ids = list(ClubData.club_coords.keys())   # club_ids is a list of integers from 1 to 80 that were used as keys in the club_coords dictionary in ClubData.py
+    def __init__(self, permutation: list[int] | None = None, location_provider: LocationProvider | None = None):
+        if location_provider is None:
+            raise ValueError("location_provider must be provided")
+        
+        self.location_provider = location_provider
+        self.club_ids = list(location_provider.get_locations().keys())
 
         if permutation is None:
             self.permutation = self._create_individual()
         else:
             self.permutation = permutation
         
-        self.real_clubs = real_clubs
-        self.permutation_size = 80 if real_clubs else len(permutation)
+        self.permutation_size = len(self.permutation)
         self.league_size = None
 
     def _create_individual(self) -> list[int]:
@@ -33,14 +36,14 @@ class Individual:
         return f"permutation: {self.permutation}"
 
     @classmethod
-    def from_permutation(cls, permutation: list[int]):
+    def from_permutation(cls, permutation: list[int], location_provider: LocationProvider | None = None):
         """Creates an individual from a given permutation of club IDs. This is useful for creating new individuals during recombination."""
-        return cls(permutation=permutation)
+        return cls(permutation=permutation, location_provider=location_provider)
 
-    @staticmethod
-    def clubs_to_coords(id_list: list[int]) -> list[tuple[float, float]]:
+    def clubs_to_coords(self, id_list: list[int]) -> list[tuple[float, float]]:
         """Converts a list of club IDs to a list of their corresponding coordinates."""
-        return [ClubData.club_coords[id] for id in id_list]
+        locations = self.location_provider.get_locations()
+        return [locations[id] for id in id_list]
     
     @property
     def fitness(self) -> float:
@@ -114,11 +117,12 @@ class Individual:
 
         size = len(self.permutation)
         leagues = [self.permutation[i:i+self.league_size] for i in range(0, size, self.league_size)]
+        locations = self.location_provider.get_locations()
 
         # --- Zentren ---
         centroids = []
         for league in leagues:
-            coords = [ClubData.club_coords[i] for i in league]
+            coords = [locations[i] for i in league]
             lat = sum(c[0] for c in coords) / len(coords)
             lon = sum(c[1] for c in coords) / len(coords)
             centroids.append((lat, lon))
@@ -129,7 +133,7 @@ class Individual:
 
         for l_idx, league in enumerate(leagues):
             for club in league:
-                d = distance(ClubData.club_coords[club], centroids[l_idx])
+                d = distance(locations[club], centroids[l_idx])
                 club_distances[club] = (d, l_idx)
                 max_dist = max(max_dist, d)
 
@@ -172,17 +176,17 @@ class Individual:
 
     def mutation_from_location_hardcore(self, max_swaps: int = 1) -> None:
         import random
-        from src.ClubData import ClubData
 
         def distance(a, b):
             return ((a[0] - b[0])**2 + (a[1] - b[1])**2) ** 0.5
 
         size = len(self.permutation)
         leagues = [self.permutation[i:i+self.league_size] for i in range(0, size, self.league_size)]
+        locations = self.location_provider.get_locations()
 
         centroids = []
         for league in leagues:
-            coords = [ClubData.club_coords[i] for i in league]
+            coords = [locations[i] for i in league]
             lat = sum(c[0] for c in coords) / len(coords)
             lon = sum(c[1] for c in coords) / len(coords)
             centroids.append((lat, lon))
@@ -202,7 +206,7 @@ class Individual:
 
             for l_idx, league in enumerate(leagues):
                 for team in league:
-                    d = distance(ClubData.club_coords[team], centroids[l_idx])
+                    d = distance(locations[team], centroids[l_idx])
                     if d > worst_dist:
                         worst_dist = d
                         worst_team = team
@@ -217,7 +221,7 @@ class Individual:
                     continue
 
                 d_new = distance(
-                    ClubData.club_coords[worst_team],
+                    locations[worst_team],
                     centroids[target_l]
                 )
 
