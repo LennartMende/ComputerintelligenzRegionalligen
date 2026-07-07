@@ -8,7 +8,7 @@ from types import MappingProxyType
 @dataclass(frozen=True)
 class ClubData:
 
-    club_coords : dict[int, tuple[float, float]] = MappingProxyType({
+    club_coords = MappingProxyType({ # : dict[int, tuple[float, float]] was type assignment in older versions, but not compatible
         1: (54.7598, 9.4071),    # SC Weiche Flensburg 08
         2: (53.8976, 10.1853),   # SV Todesfelde
         3: (53.8812, 10.6690),   # VfB Lübeck
@@ -91,7 +91,7 @@ class ClubData:
         80: (47.9889, 7.8929),   # SC Freiburg II
     })
 
-    club_names: dict[int, str] = MappingProxyType({
+    club_names = MappingProxyType({ # : dict[int, str] was type assignment in older versions, but not compatible
         1: "SC Weiche Flensburg 08",
         2: "SV Todesfelde",
         3: "VfB Lübeck",

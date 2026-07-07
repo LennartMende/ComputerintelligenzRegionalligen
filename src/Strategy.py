@@ -2,6 +2,8 @@ from __future__ import annotations
 from src.Population import Population
 from src.Individual import Individual
 from src.GenerationVisualizer import GenerationVisualizer
+from src.Evaluator import Evaluator
+from dataclasses import dataclass
 
 import random
 
@@ -12,6 +14,20 @@ from time import perf_counter
 import argparse
 parser = argparse.ArgumentParser()
 parser.parse_args()
+
+
+@dataclass
+class StrategyCfg:
+    pop_size: int
+    generations: int
+    real_clubs: bool = True
+    tournament_size: int = 3
+    number_of_points: int = 80
+    leagues: int = 4
+    stagnation_counter_limit: int = 1000
+    eval_rounds: int = 40
+    draw_map: bool = True
+
 
 class Strategy:
 
@@ -36,7 +52,14 @@ class Strategy:
         print("Fitness: \n\n", fitness)
 
     @staticmethod
-    def run(pop_size: int, generations: int, leagues: int, real_clubs: bool, number_of_points: int = 80, stagnation_counter_limit: int = 100):
+    def run(strategyCfg: StrategyCfg):
+        pop_size = strategyCfg.pop_size
+        generations = strategyCfg.generations
+        leagues = strategyCfg.leagues
+        real_clubs = strategyCfg.real_clubs
+        number_of_points = strategyCfg.number_of_points
+        stagnation_counter_limit = strategyCfg.stagnation_counter_limit
+        tournament_size=strategyCfg.tournament_size
 
         random_seed = 42
 
@@ -50,7 +73,7 @@ class Strategy:
         # -------------------------------------------------
         # INITIAL POPULATION
         # -------------------------------------------------
-        population = Population(pop_size=pop_size, leagues=leagues)
+        population = Population(pop_size=pop_size, leagues=leagues, tournament_size=tournament_size)
         start_time = perf_counter()
         stagnation_counter = 0
 
@@ -175,7 +198,17 @@ class Strategy:
 
     # evaluation for multiple populations:
     @staticmethod
-    def run_evaluation(eval_rounds: int, draw_map: bool, pop_size: int, generations: int, leagues: int, stagnation_counter_limit: int):
+    def run_evaluation(strategyCfg: StrategyCfg):
+        pop_size = strategyCfg.pop_size
+        generations = strategyCfg.generations
+        leagues = strategyCfg.leagues
+        real_clubs = strategyCfg.real_clubs
+        number_of_points = strategyCfg.number_of_points
+        stagnation_counter_limit = strategyCfg.stagnation_counter_limit
+        tournament_size=strategyCfg.tournament_size
+        eval_rounds=strategyCfg.eval_rounds
+        draw_map=strategyCfg.draw_map
+
         eval_populations = []
         for random_seed in range(1,eval_rounds + 1):
         
@@ -298,5 +331,12 @@ class Strategy:
             key=lambda pair: pair[0].fitness
         )
 
+        print("\n" * 3)
+        print("-" * 80)
+        print("Evaluator-Evaluation mit print:")
+        Evaluator.eval_printed(populations=eval_populations)
+
         if draw_map:
             GenerationVisualizer.plot_map(best_population)
+
+    

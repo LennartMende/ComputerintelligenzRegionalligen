@@ -65,6 +65,7 @@ class GenerationVisualizer:
 
 
 
+    @staticmethod
     def project_extreme_points() -> dict[str, float]:
         """
         Returns:
@@ -96,8 +97,8 @@ class GenerationVisualizer:
 
         return result
 
-
-    def compute_colors_and_markers(population: Population):
+    @staticmethod
+    def compute_colors_and_markers(population: Population) -> tuple[list[str], list[str]]:
         COLORS = ["blue", "green", "orange", "red", "grey", "black", "purple", "pink", "brown", "cyan"]
         MARKERS = ["o", "s", "^", "X"]
 
@@ -115,7 +116,7 @@ class GenerationVisualizer:
         return COLORS, MARKERS
 
 
-
+    @staticmethod
     def plot_map(population: Population):
         COLORS, MARKERS = GenerationVisualizer.compute_colors_and_markers(population)
 
@@ -200,5 +201,6 @@ class GenerationVisualizer:
 
 
 
-if __name__ == "__main__":
-    GenerationVisualizer.compute_colors_and_markers()
+# if __name__ == "__main__":
+#     population = ...
+#     GenerationVisualizer.compute_colors_and_markers(population)

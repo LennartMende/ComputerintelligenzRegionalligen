@@ -109,7 +109,9 @@ class Population:
             return 0.0
         return stdev(self.fitnesses)
 
-    
+    @property
+    def is_diversity_zero(self) -> bool:
+        return (self.diversity == 0)
 
     
     # def recombine(self, method: str = "pmx") -> List[Individual]:
