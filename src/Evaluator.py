@@ -111,7 +111,7 @@ class Evaluator:
         
         for pop in populations:
             boolean_rows["Is diversity 0?"].append(pop.is_diversity_zero) 
-        boolean_rows["Is diversity 0?"].append(first_zero_generation)
+        boolean_rows["Is diversity 0?"].append(first_zero_generation if first_zero_generation is not None else "Never")
 
         for row in numeric_rows.values():
             values = row.copy()
@@ -157,20 +157,29 @@ class Evaluator:
     ) -> None:
 
         # -------------------------------------------------
-        # Ausgabeordner erzeugen
+        # generate output folder ("evaluations")
         # -------------------------------------------------
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
+        folder_name = (
+            f"{timestamp}"
+            f"_{strategyCfg.eval_rounds}runs"
+            f"_{strategyCfg.generations}gen"
+            f"_{strategyCfg.pop_size}pop"
+            f"_{strategyCfg.tournament_size}tour"
+            f"_{strategyCfg.leagues}leagues"
+        )
+
         base_dir = Path(__file__).resolve().parent.parent
-        evaluation_dir = base_dir / "evaluations" / timestamp
+        evaluation_dir = base_dir / "evaluations" / folder_name
         raw_dir = evaluation_dir / "raw_data"
 
         evaluation_dir.mkdir(parents=True, exist_ok=True)
         raw_dir.mkdir(exist_ok=True)
 
         # -------------------------------------------------
-        # Metadaten
+        # meta data
         # -------------------------------------------------
         if strategyCfg is not None:
             metadata_path = evaluation_dir / "metadata.csv"
@@ -182,96 +191,91 @@ class Evaluator:
             print(f"Saved metadata to {metadata_path}")
 
         # -------------------------------------------------
-        # Beste Optimierung bestimmen
+        # evaluate 
         # -------------------------------------------------
-        best_run = min(
-            optimization_runs,
-            key=lambda run: run[-1].best_individual.fitness
-        )
+        evaluation_subdir = evaluation_dir / "evaluations"
+        evaluation_subdir.mkdir(exist_ok=True)
 
-        numeric_rows, boolean_rows = Evaluator.eval(best_run)
+        for run_idx, run in enumerate(optimization_runs):
 
-        generation_count = len(best_run)
+            numeric_rows, boolean_rows = Evaluator.eval(run)
 
-        numeric_header = (
-            ["Criterion"]
-            + [f"Gen {i}" for i in range(1, generation_count + 1)]
-            + [
-                "Minimum",
-                "Generation of minimum",
-                "Maximum",
-                "Generation of maximum",
-                "Mean",
-                "Median",
-                "Generation of median",
-                "Std. Dev.",
-                "Absolute trend",
-                "Average trend / generation",
-                "Relative trend (%)",
-                "Final / Initial",
-            ]
-        )
+            generation_count = len(run)
 
-        boolean_header = (
-            ["Criterion"]
-            + [f"Gen {i}" for i in range(1, generation_count + 1)]
-            + ["First generation with diversity = 0"]
-        )
+            numeric_header = (
+                ["Criterion"]
+                + [f"Gen {i}" for i in range(1, generation_count + 1)]
+                + [
+                    "Minimum",
+                    "Generation of minimum",
+                    "Maximum",
+                    "Generation of maximum",
+                    "Mean",
+                    "Median",
+                    "Generation of median",
+                    "Std. Dev.",
+                    "Absolute trend",
+                    "Average trend / generation",
+                    "Relative trend (%)",
+                    "Final / Initial",
+                ]
+            )
 
-        # -------------------------------------------------
-        # evaluation_numeric.csv
-        # -------------------------------------------------
-        numeric_path = evaluation_dir / "evaluation_numeric.csv"
+            boolean_header = (
+                ["Criterion"]
+                + [f"Gen {i}" for i in range(1, generation_count + 1)]
+                + ["First generation with diversity = 0"]
+            )
 
-        with open(numeric_path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(numeric_header)
-            for criterion, values in numeric_rows.items():
-                writer.writerow([criterion] + values)
-        print(f"Saved {numeric_path}")
+            # ---------------------------
+            # numeric
+            # ---------------------------
+            numeric_path = (
+                evaluation_subdir
+                / f"evaluation_run_{run_idx}_numeric.csv"
+            )
 
-        # -------------------------------------------------
-        # evaluation_boolean.csv
-        # -------------------------------------------------
-        boolean_path = evaluation_dir / "evaluation_boolean.csv"
+            with open(numeric_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(numeric_header)
+                for criterion, values in numeric_rows.items():
+                    writer.writerow([criterion] + values)
 
-        with open(boolean_path, "w", newline="", encoding="utf-8") as f:
+            # ---------------------------
+            # boolean
+            # ---------------------------
+            boolean_path = (
+                evaluation_subdir
+                / f"evaluation_run_{run_idx}_boolean.csv"
+            )
 
-            writer = csv.writer(f)
+            with open(boolean_path, "w", newline="", encoding="utf-8") as f:
 
-            writer.writerow(boolean_header)
+                writer = csv.writer(f)
+                writer.writerow(boolean_header)
 
-            for criterion, values in boolean_rows.items():
-                writer.writerow([criterion] + values)
+                for criterion, values in boolean_rows.items():
+                    writer.writerow([criterion] + values)
 
-        print(f"Saved {boolean_path}")
+            print(f"Saved evaluation for run {run_idx}")
 
         # -------------------------------------------------
         # best_data.csv
         # -------------------------------------------------
-
         best_data_path = evaluation_dir / "best_data.csv"
-
         with open(best_data_path, "w", newline="", encoding="utf-8") as f:
-
             writer = csv.writer(f)
-
             header = (
                 ["Optimization"]
                 + [f"Gen {i}" for i in range(1, generation_count + 1)]
             )
-
             writer.writerow(header)
-
             for run_idx, run in enumerate(optimization_runs):
-
                 row = [run_idx]
-
                 row.extend(
                     pop.best_individual.fitness
                     for pop in run
                 )
-
                 writer.writerow(row)
 
         print(f"Saved {best_data_path}")
@@ -279,30 +283,20 @@ class Evaluator:
         # -------------------------------------------------
         # raw_data
         # -------------------------------------------------
-
         for run_idx, run in enumerate(optimization_runs):
-
             raw_path = raw_dir / f"raw_data_{run_idx}.csv"
-
             with open(raw_path, "w", newline="", encoding="utf-8") as f:
-
                 writer = csv.writer(f)
-
                 pop_size = run[0].pop_size
-
                 header = (
                     ["Generation"]
                     + [f"Individual {i}" for i in range(1, pop_size + 1)]
                 )
-
                 writer.writerow(header)
-
                 for generation, pop in enumerate(run, start=1):
-
                     writer.writerow(
                         [generation] + pop.fitnesses
                     )
-
             print(f"Saved {raw_path}")
 
         print("\nEvaluation successfully written.")

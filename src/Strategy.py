@@ -107,7 +107,7 @@ class Strategy:
         # -------------------------------------------------
         # GENERATIONS LOOP (erstmal nur 1-2 zum Testen)
         # -------------------------------------------------
-        for _ in range(generations):
+        for _ in range(generations- 1):
 
             # -------------------------------------------------
             # 1. SELECTION (Eltern auswählen)
@@ -222,6 +222,8 @@ class Strategy:
         draw_map=strategyCfg.draw_map
 
         eval_populations = []
+        optimization_runs = []
+
         for random_seed in range(1,eval_rounds + 1):
         
             if random_seed is not None:
@@ -337,14 +339,17 @@ class Strategy:
             # -------------------------------------------------
             # FINAL OUTPUT
             # -------------------------------------------------
+            optimization_runs.append(populations)
             eval_populations.append(population)
         
-
+        # compare all poopulation's final results
         Population.multiple_populations_evaluation(populations=eval_populations)
         individual_population_pairs = [
             (pop.best_individual, pop)
             for pop in populations
         ]
+
+        # find best individual and draw the map
         best_individual, best_population = min(
             individual_population_pairs,
             key=lambda pair: pair[0].fitness
@@ -358,4 +363,14 @@ class Strategy:
         if draw_map:
             GenerationVisualizer.plot_map(best_population)
 
-    
+        # detailed evaluation of ALL population's generations
+        Evaluator.eval_as_csvs(strategyCfg=strategyCfg, optimization_runs=optimization_runs)
+
+    @staticmethod
+    def run_eval_with_different_configs(strategy_cfg_list: list[StrategyCfg]):
+        for i in range(0, len(strategy_cfg_list)):
+            if strategy_cfg_list[len(strategy_cfg_list) - 1].draw_map == True:
+                strategy_cfg_list[i].draw_map = (True if i == len(strategy_cfg_list) - 1 else False)
+            else:
+                strategy_cfg_list[i].draw_map = False
+            Strategy.run_evaluation(strategy_cfg_list[i])
