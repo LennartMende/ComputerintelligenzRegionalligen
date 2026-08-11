@@ -241,7 +241,7 @@ class Strategy:
             # -------------------------------------------------
             # INITIAL POPULATION
             # -------------------------------------------------
-            population = Population(leagues=leagues, pop_size=pop_size, location_provider=location_provider)
+            population = Population(leagues=leagues, pop_size=pop_size, tournament_size=tournament_size, location_provider=location_provider)
             start_time = perf_counter()
             stagnation_counter = 0
 
