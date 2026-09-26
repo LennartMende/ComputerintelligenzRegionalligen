@@ -73,12 +73,8 @@ class Strategy:
         # -------------------------------------------------
         # CREATE LOCATION PROVIDER
         # -------------------------------------------------
-        print(f"\n[DEBUG Strategy] run() called with real_clubs={real_clubs}, number_of_points={number_of_points}")
         location_provider = get_location_provider(use_real_clubs=real_clubs, n=number_of_points)
         locations = location_provider.get_locations()
-        print(f"[DEBUG Strategy] Location provider created. Got {len(locations)} locations.")
-        print(f"[DEBUG Strategy] First 3 location IDs: {list(locations.keys())[:3]}")
-        print(f"[DEBUG Strategy] First location value: {list(locations.values())[0]}")
 
         # -------------------------------------------------
         # INITIAL POPULATION

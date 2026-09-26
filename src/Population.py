@@ -62,7 +62,7 @@ class Population:
         
         if len(self.individuals[0].permutation) % leagues == 0:
             self.league_size = len(self.individuals[0].permutation) // leagues
-            print(f"len(self.individuals[0].permutation) = {len(self.individuals[0].permutation)} and leagues = {leagues}")
+            # print(f"len(self.individuals[0].permutation) = {len(self.individuals[0].permutation)} and leagues = {leagues}")
         else:
             raise ValueError(f"len(self.individuals[0].permutation) = {len(self.individuals[0].permutation)} and leagues = {leagues}\n\
                              But self.individuals[0].permutation must be divisible by leagues")
@@ -330,7 +330,7 @@ class Population:
     
 
     def mutate(self):
-        print("mutation: len(self.individuals[0].permutation) = ", len(self.individuals[0].permutation))
+        
         for ind in self.individuals:
 
             if self.generation < 50:
@@ -427,21 +427,10 @@ class Population:
         best_elite_fitness = min(ind.fitness for ind in elites)
         best_offspring_fitness = min(ind.fitness for ind in offspring_to_add) if offspring_to_add else float('inf')
         
-        print(f"\n[ELITISM DEBUG] SELF has {len(self.individuals)} individuals")
-        print(f"[ELITISM DEBUG] Best fitness in SELF: {min(ind.fitness for ind in self.individuals)}")
-        print(f"[ELITISM DEBUG] Sorted[0] fitness: {sorted_self[0].fitness}")
-        print(f"[ELITISM DEBUG] Elite[0] fitness: {elites[0].fitness}")
-        print(f"[ELITISM DEBUG] Best elite fitness: {best_elite_fitness}")
-        print(f"[ELITISM DEBUG] Best offspring fitness: {best_offspring_fitness}")
-        
         # Zusammenfügen: Elite ZUERST, dann Offspring
         new_individuals = elites + offspring_to_add
         
         best_new_fitness = min(ind.fitness for ind in new_individuals)
-        
-        print(f"[ELITISM DEBUG] Best in NEW population: {best_new_fitness}")
-        print(f"[ELITISM DEBUG] Elites preserved: {best_new_fitness == best_elite_fitness}")
-        print(f"[ELITISM DEBUG] New individuals count: {len(new_individuals)} (expected: {self.pop_size})")
 
         return Population(
             pop_size=self.pop_size,
