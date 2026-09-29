@@ -34,6 +34,9 @@ class GenerationVisualizer:
         gens = np.arange(len(populations))
 
         plt.plot(gens, avg_fits)
+        plt.title("mean")
+        plt.xlabel("Generation")
+        plt.ylabel("Durchschnittliche Fitness (Gesamtfahrtweg in km)")
         plt.show()
         
     @staticmethod
@@ -42,6 +45,9 @@ class GenerationVisualizer:
         gens = np.arange(len(populations))
 
         plt.plot(gens, best_fits)
+        plt.title("min")
+        plt.xlabel("Generation")
+        plt.ylabel("Beste Fitness (Gesamtfahrtweg in km)")
         plt.show()
     
     def project_club_coords(self):
@@ -123,8 +129,6 @@ class GenerationVisualizer:
 
         individual = population.best_individual
         perm = individual.permutation
-
-        print("population.league_size = ", population.league_size)
 
         leagues = [
             perm[i:i + population.league_size]

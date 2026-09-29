@@ -28,16 +28,13 @@ def get_location_provider(use_real_clubs: bool, n: Optional[int] = None) -> Loca
     Raises:
         ValueError: If n is None when use_real_clubs is False.
     """
-    print(f"\n[DEBUG LocationProvider] get_location_provider called with use_real_clubs={use_real_clubs}, n={n}")
     
     if use_real_clubs:
-        print("[DEBUG LocationProvider] Creating ClubDataProvider (REAL clubs)")
         return ClubDataProvider()
 
     if n is None:
         raise ValueError("n must be provided when using random locations")
 
-    print(f"[DEBUG LocationProvider] Creating RandomLocationProvider (RANDOM locations with n={n})")
     return RandomLocationProvider(n)
 
 class ClubDataProvider:
